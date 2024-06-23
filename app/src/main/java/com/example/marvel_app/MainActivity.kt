@@ -4,15 +4,42 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.remember
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.marvel_app.ui.theme.Marvel_appTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             Marvel_appTheme {
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "MarvelListScreen"){
+                    composable(
+                        route = "MarvelListScreen"
+                    ){
 
+                    }
+                    composable(
+                        route = "HeroDetailScreen/{heroName}",
+                        arguments = listOf(
+                            navArgument("heroName"){
+                                type = NavType.StringType
+                            }
+                        )
+                    ){
+                        val heroName = remember {
+                            it.arguments?.getString("heroName")
+                        }
+                    }
+                }
             }
         }
     }
