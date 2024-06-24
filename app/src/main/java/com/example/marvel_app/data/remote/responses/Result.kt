@@ -1,5 +1,7 @@
 package com.example.marvel_app.data.remote.responses
 
+import com.example.marvel_app.remote.responses.Comics
+
 data class Result(
     val comics: Comics,
     val description: String,

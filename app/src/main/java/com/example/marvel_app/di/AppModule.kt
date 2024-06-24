@@ -22,7 +22,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideHeroApi():MarvelApi{
+    fun provideHeroApi(): MarvelApi {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)

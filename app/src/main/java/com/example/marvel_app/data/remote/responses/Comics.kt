@@ -1,4 +1,6 @@
-package com.example.marvel_app.data.remote.responses
+package com.example.marvel_app.remote.responses
+
+import com.example.marvel_app.data.remote.responses.Item
 
 data class Comics(
     val available: Int,

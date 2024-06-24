@@ -4,12 +4,12 @@ plugins {
     id("com.google.devtools.ksp")
     id ("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.plugin.serialization")
+
 }
 
 android {
     namespace = "com.example.marvel_app"
     compileSdk = 34
-
 
     defaultConfig {
         applicationId = "com.example.marvel_app"
@@ -17,8 +17,11 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {
@@ -33,7 +36,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -42,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.13"
+        kotlinCompilerExtensionVersion = "1.5.0"
     }
     packaging {
         resources {
@@ -52,7 +54,7 @@ android {
 }
 
 dependencies {
-    // Основные зависимости AndroidX
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -68,6 +70,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.2")
 
@@ -102,10 +106,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.0")
 
     // Hilt для Dependency Injection
+    ksp("com.google.dagger:hilt-compiler:2.48")
     implementation("com.google.dagger:hilt-android:2.48")
-    ksp ("com.google.dagger:hilt-android-compiler:2.33-beta")
-    implementation ("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
-    ksp ("androidx.hilt:hilt-compiler:1.2.0")
+    //implementation (libs.androidx.hilt.lifecycle.viewmodel)
+    //kapt (libs.androidx.hilt.compiler)
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
     implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Kotlin Serialization для JSON
