@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.marvel_app.ui.hero_list.HeroListScreen
 import com.example.marvel_app.ui.theme.Marvel_appTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     composable(
                         route = "MarvelListScreen"
                     ){
-
+                        HeroListScreen(navController = navController)
                     }
                     composable(
                         route = "HeroDetailScreen/{heroName}",
