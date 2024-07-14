@@ -10,7 +10,6 @@ interface MarvelApi {
     @GET("characters")
     suspend fun getHeroList(
         @Query("limit") limit : Int,
-        @Query("orderBy") order: String = "name"
     ): ListHeroes
 
     @GET("characters/{id}")
