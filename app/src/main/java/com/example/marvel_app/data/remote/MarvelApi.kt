@@ -5,15 +5,14 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-
 interface MarvelApi {
     @GET("characters")
     suspend fun getHeroList(
-        @Query("limit") limit : Int,
+        @Query("limit") limit: Int
     ): ListHeroes
 
     @GET("characters/{id}")
     suspend fun getHero(
-        @Path("id") id : Int
+        @Path("id") id: Int
     ): ListHeroes
 }
