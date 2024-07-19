@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -80,7 +83,11 @@ fun HeroListScreen(
             SearchBar(
                 hint = "Search",
                 modifier = Modifier.padding(15.dp)
-            )
+            ){
+                
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            HeroList(navController = navController)
         }
     }
 }
@@ -129,6 +136,40 @@ fun SearchBar(
             textStyle = TextStyle(color = WhiteColor, fontSize = 18.sp),
         )
     }
+}
+
+@Composable
+fun HeroList(
+    navController: NavController,
+    viewModel: HerolistScreenViewModel = hiltViewModel()
+){
+    val heroList by remember {
+        viewModel.heroList
+    }
+    val endReached by remember{
+        viewModel.endReached
+    }
+    val loadError by remember{
+        viewModel.loadError
+    }
+    val isLoading by remember{
+        viewModel.isLoading
+    }
+
+    LazyColumn(contentPadding = PaddingValues(16.dp)) {
+        val itemCount = if(heroList.size%2 == 0){
+            heroList.size / 2
+        }else{
+            heroList.size / 2 +1
+        }
+        items(itemCount){
+            if( it >= itemCount - 1 && !endReached){
+                viewModel.loadHeroPaginated()
+            }
+            HeroRow(rowIndex = it, list = heroList, navController = navController)
+        }
+    }
+
 }
 
 

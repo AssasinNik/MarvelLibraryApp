@@ -103,14 +103,13 @@ dependencies {
 
     // Coil для загрузки изображений
     implementation("io.coil-kt:coil:2.2.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
     implementation ("com.google.accompanist:accompanist-coil:0.7.0")
 
     // Hilt для Dependency Injection
     ksp("com.google.dagger:hilt-compiler:2.48")
     implementation("com.google.dagger:hilt-android:2.48")
     implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
-    //implementation (libs.androidx.hilt.lifecycle.viewmodel)
-    //kapt (libs.androidx.hilt.compiler)
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0-alpha01")
 
     // Kotlin Serialization для JSON
