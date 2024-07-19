@@ -169,6 +169,19 @@ fun HeroList(
             HeroRow(rowIndex = it, list = heroList, navController = navController)
         }
     }
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ){
+        if(isLoading){
+            CircularProgressIndicator(color = MaterialTheme.colors.primary)
+        }
+        if(loadError.isNotEmpty()){
+            RetrySection(error = loadError) {
+                viewModel.loadHeroPaginated()
+            }
+        }
+    }
 
 }
 
@@ -257,5 +270,20 @@ fun HeroRow(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+
+@Composable
+fun RetrySection(
+    error: String,
+    onRetry: () -> Unit
+){
+    Column {
+        Text(text = error, color= Color.Red, fontSize = 18.sp)
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = {onRetry()}, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text(text = "Retry")
+        }
     }
 }

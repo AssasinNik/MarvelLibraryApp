@@ -6,10 +6,10 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MarvelApi {
-    @GET("v1/public/characterss")
+    @GET("characters")
     suspend fun getHeroList(
-        @Query("limit") limit: Int,
-        @Query("offset") offset: Int
+        //@Query("limit") limit: Int,
+        //@Query("offset") offset: Int
     ): ListHeroes
 
     @GET("characters/{id}")

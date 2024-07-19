@@ -12,7 +12,7 @@ class HeroRepository @Inject constructor(
 ) {
     suspend fun getHeroList(limit: Int, offset: Int): Resource<ListHeroes> {
         val response = try {
-            api.getHeroList(limit, offset)
+            api.getHeroList()
         } catch (e: Exception) {
             return Resource.Error("An unknown error")
         }
