@@ -31,13 +31,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.marvel_app.R
 import com.example.marvel_app.data.models.MarvelListEntry
@@ -174,7 +179,7 @@ fun HeroList(
         contentAlignment = Alignment.Center
     ){
         if(isLoading){
-            CircularProgressIndicator(color = MaterialTheme.colors.primary)
+            CircularProgressIndicator(color = SearchBorderColor)
         }
         if(loadError.isNotEmpty()){
             RetrySection(error = loadError) {
@@ -191,12 +196,11 @@ fun MarvelEntry(
     entry: MarvelListEntry,
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: HerolistScreenViewModel = hiltViewModel()
 ){
     
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
             .shadow(5.dp, RoundedCornerShape(10.dp))
             .clip(RoundedCornerShape(10.dp))
             .aspectRatio(1f)
@@ -207,40 +211,39 @@ fun MarvelEntry(
                 )
             }
     ){
-        CoilImage(
-            request = ImageRequest.Builder(LocalContext.current)
-                .data(entry.imageUrl)
-                .target{
-
+        Column(modifier = Modifier.align(Alignment.Center)) {
+            SubcomposeAsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(entry.imageUrl)
+                    .build(),
+                contentDescription = entry.characterName,
+                contentScale = ContentScale.Crop,
+                filterQuality = FilterQuality.None,
+                modifier = Modifier
+                    .size(70.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                    .border(
+                        width = 2.dp,
+                        color = RedColor,
+                        shape = CircleShape
+                    )
+                    .clip(CircleShape) ,
+                loading = {
+                    CircularProgressIndicator(color = SearchBorderColor)
                 }
-                .build(),
-            contentDescription = entry.characterName,
-            fadeIn = true,
-            modifier = Modifier
-                .size(120.dp)
-                .align(Alignment.Center)
-                .aspectRatio(1f, matchHeightConstraintsFirst = true)
-                .border(
-                    width = 2.dp,
-                    color = RedColor,
-                    shape = CircleShape
-                )
-                .clip(CircleShape)
-        ){
-            CircularProgressIndicator(
-                color = MaterialTheme.colors.primary,
-                modifier = Modifier.scale(0.5f)
+            )
+            Text(
+                text = entry.characterName,
+                style = TextStyle(
+                    fontFamily = Poppins,
+                    color = Color.White,
+                    fontSize = 20.sp
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
         }
-        Text(
-            text = entry.characterName,
-            style = TextStyle(
-                fontFamily = Poppins,
-                color = Color.White,
-                fontSize = 20.sp
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
@@ -258,10 +261,10 @@ fun HeroRow(
                 navController = navController,
                 modifier = Modifier.weight(1f)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            if(list.size >= rowIndex*2+2){
+            Spacer(modifier = Modifier.width(16.dp))
+            if(list.size >= rowIndex * 2 + 2){
                 MarvelEntry(
-                    entry = list[rowIndex * 2+1],
+                    entry = list[rowIndex * 2 + 1],
                     navController = navController,
                     modifier = Modifier.weight(1f)
                 )
