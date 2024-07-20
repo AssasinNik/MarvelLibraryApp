@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
@@ -58,7 +59,8 @@ import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun HeroListScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: HerolistScreenViewModel = hiltViewModel()
 ){
     Surface(
         color = BackGround,
@@ -89,7 +91,7 @@ fun HeroListScreen(
                 hint = "Search",
                 modifier = Modifier.padding(15.dp)
             ){
-                
+                viewModel.searchMarvelList(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
             HeroList(navController = navController)
@@ -160,6 +162,9 @@ fun HeroList(
     val isLoading by remember{
         viewModel.isLoading
     }
+    val isSearching by remember {
+        viewModel.isSearching
+    }
 
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
         val itemCount = if(heroList.size%2 == 0){
@@ -168,7 +173,7 @@ fun HeroList(
             heroList.size / 2 +1
         }
         items(itemCount){
-            if( it >= itemCount - 1 && !endReached){
+            if( it >= itemCount - 1 && !endReached && !isLoading && !isSearching){
                 viewModel.loadHeroPaginated()
             }
             HeroRow(rowIndex = it, list = heroList, navController = navController)

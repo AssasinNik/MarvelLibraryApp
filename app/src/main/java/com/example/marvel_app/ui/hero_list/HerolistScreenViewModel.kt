@@ -1,6 +1,5 @@
 package com.example.marvel_app.ui.hero_list
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,8 +8,8 @@ import com.example.marvel_app.repository.HeroRepository
 import com.example.marvel_app.util.Constants.PAGE_SIZE
 import com.example.marvel_app.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
@@ -25,9 +24,39 @@ class HerolistScreenViewModel @Inject constructor(
     var isLoading = mutableStateOf(false)
     var endReached = mutableStateOf(false)
 
+    private var cachedHeroList = listOf<MarvelListEntry>()
+    private var isSearchStarting = true
+    var isSearching = mutableStateOf(false)
+
     init{
         loadHeroPaginated()
     }
+
+    fun searchMarvelList(query: String){
+        val listToSearch = if(isSearchStarting){
+            heroList.value
+        }else{
+            cachedHeroList
+        }
+        viewModelScope.launch (Dispatchers.Default){
+            if(query.isEmpty()){
+                heroList.value = cachedHeroList
+                isSearching.value = false
+                isSearchStarting = true
+                return@launch
+            }
+            val results = listToSearch.filter {
+                it.characterName.contains(query.trim(), ignoreCase = true) || it.number.toString() == query.trim()
+            }
+            if(isSearchStarting){
+                cachedHeroList = heroList.value
+                isSearchStarting = false
+            }
+            heroList.value = results
+            isSearching.value = true
+        }
+    }
+
 
     fun loadHeroPaginated(){
         viewModelScope.launch {
