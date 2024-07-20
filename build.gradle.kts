@@ -10,8 +10,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.48")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:1.5.21")
+        classpath (libs.kotlin.gradle.plugin)
+        classpath(libs.dagger.hilt.android.gradle.plugin)
+        classpath(libs.kotlin.serialization)
     }
 }
