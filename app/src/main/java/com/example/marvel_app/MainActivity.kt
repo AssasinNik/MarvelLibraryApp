@@ -1,11 +1,17 @@
 package com.example.marvel_app
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.view.View
+import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.remember
+import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -29,12 +35,44 @@ class MainActivity : ComponentActivity() {
             setKeepOnScreenCondition{
                 !viewModel.isReady.value
             }
+            setOnExitAnimationListener{screen ->
+                val zoomX = ObjectAnimator.ofFloat(
+                    screen.iconView,
+                    View.SCALE_X,
+                    0.4f,
+                    0.0f
+                )
+                zoomX.interpolator = OvershootInterpolator()
+                zoomX.duration = 500L
+                zoomX.doOnEnd { screen.remove() }
+
+                val zoomY = ObjectAnimator.ofFloat(
+                    screen.iconView,
+                    View.SCALE_Y,
+                    0.4f,
+                    0.0f
+                )
+                zoomY.interpolator = OvershootInterpolator()
+                zoomY.duration = 500L
+                zoomY.doOnEnd { screen.remove() }
+
+
+                zoomX.start()
+                zoomY.start()
+            }
         }
         enableEdgeToEdge()
         setContent {
             Marvel_appTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "MarvelListScreen"){
+                NavHost(
+                    navController = navController,
+                    startDestination = "MarvelListScreen",
+                    enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(200))},
+                    exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(200))},
+                    popEnterTransition =  { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(200))},
+                    popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(200))}
+                ){
                     composable(
                         route = "MarvelListScreen"
                     ){
