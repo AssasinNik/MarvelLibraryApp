@@ -18,6 +18,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.marvel_app.ui.character_screen.CharacterScreen
+import com.example.marvel_app.ui.character_screen.CharacterScreenViewModel
 import com.example.marvel_app.ui.hero_list.HeroListScreen
 import com.example.marvel_app.ui.main_screen.MainViewModel
 import com.example.marvel_app.ui.theme.Marvel_appTheme
@@ -87,8 +89,9 @@ class MainActivity : ComponentActivity() {
                         )
                     ){
                         val heroId = remember {
-                            it.arguments?.getInt("heroName")
+                            it.arguments?.getInt("heroId")
                         }
+                        CharacterScreen(navController = navController, heroId = heroId)
                     }
                 }
             }

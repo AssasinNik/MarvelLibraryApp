@@ -12,11 +12,11 @@ interface MarvelApi {
 
     @GET("characters/{id}")
     suspend fun getHero(
-        @Path("id") id: Int
+        @Path("id") id: Int?
     ): Character
 
     @GET("characters/{id}/comics")
     suspend fun getHeroComics(
-        @Path("id") id: Int
+        @Path("id") id: Int?
     ):Comics
 }

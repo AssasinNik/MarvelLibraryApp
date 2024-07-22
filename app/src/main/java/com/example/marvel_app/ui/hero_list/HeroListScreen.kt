@@ -55,7 +55,7 @@ import com.example.marvel_app.ui.theme.WhiteColor
 @Composable
 fun HeroListScreen(
     navController: NavController,
-    viewModel: HerolistScreenViewModel = hiltViewModel()
+    viewModel: HeroListScreenViewModel = hiltViewModel()
 ){
     Surface(
         color = BackGround,
@@ -98,7 +98,7 @@ fun SearchBar(
     modifier: Modifier = Modifier,
     hint: String = "",
     onSearch: (String) -> Unit = {}
-    ){
+){
     var text by remember {
         mutableStateOf("")
     }
@@ -143,7 +143,7 @@ fun SearchBar(
 @Composable
 fun HeroList(
     navController: NavController,
-    viewModel: HerolistScreenViewModel = hiltViewModel()
+    viewModel: HeroListScreenViewModel = hiltViewModel()
 ){
     val heroList by remember {
         viewModel.heroList

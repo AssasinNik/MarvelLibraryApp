@@ -21,7 +21,7 @@ class HeroRepository @Inject constructor(
         return Resource.Success(response)
     }
 
-    suspend fun getHeroInfo(heroId: Int): Resource<Character> {
+    suspend fun getHeroInfo(heroId: Int?): Resource<Character> {
         val response = try {
             api.getHero(heroId)
         } catch (e: Exception) {
@@ -29,7 +29,7 @@ class HeroRepository @Inject constructor(
         }
         return Resource.Success(response)
     }
-    suspend fun getHeroComics(heroId: Int): Resource<Comics> {
+    suspend fun getHeroComics(heroId: Int?): Resource<Comics> {
         val response = try {
             api.getHeroComics(heroId)
         } catch (e: Exception) {

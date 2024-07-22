@@ -14,7 +14,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class HerolistScreenViewModel @Inject constructor(
+class HeroListScreenViewModel @Inject constructor(
     private val heroRepository: HeroRepository
 ): ViewModel() {
     private var curPage = 0
