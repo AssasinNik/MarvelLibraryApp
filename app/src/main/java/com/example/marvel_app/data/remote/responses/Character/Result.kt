@@ -1,4 +1,4 @@
-package com.example.marvel_app.data.remote.responses
+package com.example.marvel_app.data.remote.responses.Character
 
 data class Result(
     val comics: Comics,

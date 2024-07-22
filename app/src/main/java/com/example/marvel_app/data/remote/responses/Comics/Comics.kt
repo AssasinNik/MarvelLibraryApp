@@ -1,6 +1,6 @@
-package com.example.marvel_app.data.remote.responses
+package com.example.marvel_app.data.remote.responses.Comics
 
-data class ListHeroes(
+data class Comics(
     val attributionHTML: String,
     val attributionText: String,
     val code: Int,

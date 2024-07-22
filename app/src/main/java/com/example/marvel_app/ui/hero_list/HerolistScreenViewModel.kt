@@ -3,7 +3,7 @@ package com.example.marvel_app.ui.hero_list
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.marvel_app.data.models.MarvelListEntry
+import com.example.marvel_app.data.models.HeroesListEntry
 import com.example.marvel_app.repository.HeroRepository
 import com.example.marvel_app.util.Constants.PAGE_SIZE
 import com.example.marvel_app.util.Resource
@@ -19,12 +19,12 @@ class HerolistScreenViewModel @Inject constructor(
 ): ViewModel() {
     private var curPage = 0
 
-    var heroList = mutableStateOf<List<MarvelListEntry>>(listOf())
+    var heroList = mutableStateOf<List<HeroesListEntry>>(listOf())
     var loadError = mutableStateOf("")
     var isLoading = mutableStateOf(false)
     var endReached = mutableStateOf(false)
 
-    private var cachedHeroList = listOf<MarvelListEntry>()
+    private var cachedHeroList = listOf<HeroesListEntry>()
     private var isSearchStarting = true
     var isSearching = mutableStateOf(false)
 
@@ -61,14 +61,14 @@ class HerolistScreenViewModel @Inject constructor(
     fun loadHeroPaginated(){
         viewModelScope.launch {
             isLoading.value = true
-            val result =heroRepository.getHeroList(PAGE_SIZE, curPage * PAGE_SIZE)
+            val result =heroRepository.getHeroList()
             when(result){
                 is Resource.Success -> {
                     endReached.value = curPage* PAGE_SIZE >= result.data!!.data.count
                     curPage++
 
                     val heroEntries = result.data.data.results.mapIndexed { index, entry ->
-                        MarvelListEntry(entry.name.capitalize(Locale.ROOT), entry.thumbnail.path+".jpg", entry.id)
+                        HeroesListEntry(entry.name.capitalize(Locale.ROOT), entry.thumbnail.path+"."+entry.thumbnail.extension, entry.id)
                     }
                     loadError.value = ""
                     isLoading.value = false

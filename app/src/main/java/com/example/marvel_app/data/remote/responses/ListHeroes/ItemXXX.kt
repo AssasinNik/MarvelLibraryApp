@@ -1,4 +1,4 @@
-package com.example.marvel_app.data.remote.responses
+package com.example.marvel_app.data.remote.responses.ListHeroes
 
 data class ItemXXX(
     val name: String,

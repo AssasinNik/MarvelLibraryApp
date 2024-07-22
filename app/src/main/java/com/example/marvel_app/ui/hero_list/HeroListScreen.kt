@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -28,7 +27,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
@@ -40,13 +38,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.marvel_app.R
-import com.example.marvel_app.data.models.MarvelListEntry
+import com.example.marvel_app.data.models.HeroesListEntry
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.GrayColor
 import com.example.marvel_app.ui.theme.Poppins
@@ -55,7 +51,6 @@ import com.example.marvel_app.ui.theme.SearchBorderColor
 import com.example.marvel_app.ui.theme.SearchColor
 import com.example.marvel_app.ui.theme.SearchTextColor
 import com.example.marvel_app.ui.theme.WhiteColor
-import com.google.accompanist.coil.CoilImage
 
 @Composable
 fun HeroListScreen(
@@ -198,7 +193,7 @@ fun HeroList(
 
 @Composable
 fun MarvelEntry(
-    entry: MarvelListEntry,
+    entry: HeroesListEntry,
     navController: NavController,
     modifier: Modifier = Modifier,
 ){
@@ -256,7 +251,7 @@ fun MarvelEntry(
 @Composable
 fun HeroRow(
     rowIndex: Int,
-    list: List<MarvelListEntry>,
+    list: List<HeroesListEntry>,
     navController: NavController
 ){
     Column {
