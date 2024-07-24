@@ -36,30 +36,39 @@ class CharacterScreenViewModel @Inject constructor(
             _isLoading.value = true
 
             val characterInfo = heroRepository.getHeroInfo(heroId)
-            val comicsInfo = heroRepository.getHeroComics(heroId)
-
             when (characterInfo) {
                 is Resource.Success -> {
+                    val heroInfo = characterInfo.data!!.data.results[0] // Get the first result
+                    val characterEntry = CharacterEntry(
+                        heroInfo.name.capitalize(Locale.ROOT),
+                        heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
+                        heroInfo.description
+                    )
+                    _character.value = characterEntry
+                    val comicsInfo = heroRepository.getHeroComics(heroId)
                     when (comicsInfo) {
                         is Resource.Success -> {
-                            val heroInfo = characterInfo.data!!.data.results[0] // Get the first result
-                            val characterEntry = CharacterEntry(
-                                heroInfo.name.capitalize(Locale.ROOT),
-                                heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
-                                heroInfo.description
-                            )
                             val heroComicsInfo = comicsInfo.data!!.data.results.mapIndexed { index, entry ->
-                                ComicsEntry(
-                                    entry.title,
-                                    entry.description,
-                                    entry.thumbnail.path + "." + entry.thumbnail.extension
-                                )
+                                if (entry.description==""){
+                                    ComicsEntry(
+                                        entry.title,
+                                        (entry.textObjects.mapIndexed { _, textObject ->
+                                            textObject.text
+                                        }.toString().substring(1)),
+                                        entry.thumbnail.path + "." + entry.thumbnail.extension
+                                    )
+                                }
+                               else{
+                                    ComicsEntry(
+                                        entry.title,
+                                        entry.description,
+                                        entry.thumbnail.path + "." + entry.thumbnail.extension
+                                    )
+                               }
                             }
-
                             _loadError.value = null
                             _isLoading.value = false
                             comicsList.value = heroComicsInfo
-                            _character.value = characterEntry
                         }
                         is Resource.Error -> {
                             _loadError.value = comicsInfo.message

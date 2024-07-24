@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -46,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.example.marvel_app.data.models.ComicsEntry
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
@@ -68,108 +69,217 @@ fun CharacterScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val loadError by viewModel.loadError.collectAsState()
 
+
+
     Surface(
         color = BackGround,
         modifier = Modifier.fillMaxSize()
     ) {
-        Column (
+        Column(
             modifier = Modifier.fillMaxSize()
-        ){
-            IconButton(onClick = { navController.navigate("MarvelListScreen") }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back To MainScreen",
-                    tint = Color.White,
+        ) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+            ){
+                IconButton(
+                    onClick = { navController.navigate("MarvelListScreen") },
                     modifier = Modifier
                         .padding(top = 40.dp, start = 20.dp)
-                        .size(35.dp),
-                )
-            }
-            if(!isLoading){
-                SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(character?.imageUrl)
-                        .build(),
-                    contentDescription = character?.characterName,
-                    contentScale = ContentScale.Crop,
-                    filterQuality = FilterQuality.None,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .align(Alignment.CenterHorizontally)
-                        .aspectRatio(1f, matchHeightConstraintsFirst = true)
-                        .border(
-                            width = 2.dp,
-                            color = RedColor,
-                            shape = CircleShape
-                        )
-                        .clip(CircleShape) ,
-                    loading = {
-                        CircularProgressIndicator(
-                            color = SearchBorderColor
-                        )
-                    }
-                )
-                Spacer(modifier = Modifier.height(14.dp))
-                Box(
-                    modifier = Modifier
-                        .background(RedColor)
-                        .height(70.dp)
-                        .width(180.dp)
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally)
-                ){
-                    Text(
-                        text = character?.characterName.toString(),
-                        style = TextStyle(
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            fontSize = 20.sp
-                        ),
-                        textAlign = TextAlign.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back To MainScreen",
+                        tint = Color.White,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.Center)
+                            .size(35.dp),
                     )
                 }
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = "Description",
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.White,
-                        fontSize = 23.sp
-                    ),
-                    textAlign = TextAlign.Left,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp)
-                )
-                Spacer(modifier = Modifier.height(15.dp))
-                Text(
-                    text = character?.description.toString(),
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        color = Color.White,
-                        fontWeight = FontWeight.Thin,
-                        fontSize = 18.sp
-                    ),
-                    textAlign = TextAlign.Left,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp)
-                )
-                LazyColumn(contentPadding = PaddingValues(16.dp)) {
-                   //items(comicsList.size)
+            }
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState(), true)
+            ){
+                if(!isLoading){
+                    Spacer(modifier = Modifier.height(5.dp))
+                    SubcomposeAsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(character?.imageUrl)
+                            .build(),
+                        contentDescription = character?.characterName,
+                        contentScale = ContentScale.Crop,
+                        filterQuality = FilterQuality.None,
+                        modifier = Modifier
+                            .size(120.dp)
+                            .align(Alignment.CenterHorizontally)
+                            .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                            .border(
+                                width = 2.dp,
+                                color = RedColor,
+                                shape = CircleShape
+                            )
+                            .clip(CircleShape) ,
+                        loading = {
+                            CircularProgressIndicator(
+                                color = SearchBorderColor
+                            )
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Box(
+                        modifier = Modifier
+                            .background(RedColor)
+                            .height(70.dp)
+                            .width(180.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally)
+                            .clip(RoundedCornerShape(20.dp))
+                    ){
+                        Text(
+                            text = character?.characterName.toString(),
+                            style = TextStyle(
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                fontSize = 20.sp
+                            ),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = "Description",
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.White,
+                            fontSize = 23.sp
+                        ),
+                        textAlign = TextAlign.Left,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp)
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                    if(character?.description.toString() != ""){
+                        Text(
+                            text = character?.description.toString(),
+                            style = TextStyle(
+                                fontFamily = Poppins,
+                                color = Color.White,
+                                fontWeight = FontWeight.Thin,
+                                fontSize = 18.sp
+                            ),
+                            textAlign = TextAlign.Left,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp)
+                        )
+                    }
+                    else{
+                        Text(
+                            text = "There is no description about this superhero from Marvel Comics. We hope that information about the character will be added soon",
+                            style = TextStyle(
+                                fontFamily = Poppins,
+                                color = Color.White,
+                                fontWeight = FontWeight.Thin,
+                                fontSize = 18.sp
+                            ),
+                            textAlign = TextAlign.Left,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    for (element in comicsList){
+                        Comics(comics = element)
+
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+                else{
+                    Spacer(modifier = Modifier.height(20.dp))
+                    CircularProgressIndicator(
+                        color = SearchBorderColor,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally))
                 }
             }
-            else{
-                Spacer(modifier = Modifier.height(20.dp))
+        }
+    }
+}
+
+
+@Composable
+fun Comics(
+    comics : ComicsEntry
+){
+    Row (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
+    ){
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+            .data(comics.comicsImage)
+            .build(),
+            contentDescription = comics.comicsName,
+            contentScale = ContentScale.Crop,
+            filterQuality = FilterQuality.None,
+            modifier = Modifier
+                .height(150.dp)
+                .width(100.dp)
+                .align(Alignment.Top)
+            ,
+            loading = {
                 CircularProgressIndicator(
-                    color = SearchBorderColor,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally))
+                    color = SearchBorderColor
+                )
+            },
+        )
+        Column {
+            Text(
+                text = comics.comicsName,
+                style = TextStyle(
+                    fontFamily = Poppins,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                    fontSize = 17.sp
+                ),
+                textAlign = TextAlign.Left,
+                modifier = Modifier.padding(start = 5.dp)
+            )
+            comics.comicsDescription?.let {
+                if (it.length>100){
+                    Text(
+                        text = it.take(100)+"...",
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            color = Color.White,
+                            fontWeight = FontWeight.Thin,
+                            fontSize = 15.sp
+                        ),
+                        textAlign = TextAlign.Left,
+                        modifier = Modifier.padding(start = 5.dp)
+                    )
+                }
+                else{
+                    Text(
+                        text = it,
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            color = Color.White,
+                            fontWeight = FontWeight.Thin,
+                            fontSize = 15.sp
+                        ),
+                        textAlign = TextAlign.Left,
+                        modifier = Modifier.padding(start = 5.dp)
+                    )
+                }
             }
         }
     }
