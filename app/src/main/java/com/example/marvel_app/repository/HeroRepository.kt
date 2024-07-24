@@ -12,9 +12,9 @@ import javax.inject.Inject
 class HeroRepository @Inject constructor(
     private val api: MarvelApi
 ) {
-    suspend fun getHeroList(): Resource<ListHeroes> {
+    suspend fun getHeroList(name: String): Resource<ListHeroes> {
         val response = try {
-            api.getHeroList()
+            api.getHeroList(name)
         } catch (e: Exception) {
             return Resource.Error("An unknown error")
         }
@@ -29,9 +29,9 @@ class HeroRepository @Inject constructor(
         }
         return Resource.Success(response)
     }
-    suspend fun getHeroComics(heroId: Int?): Resource<Comics> {
+    suspend fun getHeroComics(heroId: Int?, limit: Int): Resource<Comics> {
         val response = try {
-            api.getHeroComics(heroId)
+            api.getHeroComics(heroId, limit)
         } catch (e: Exception) {
             return Resource.Error("An unknown error")
         }

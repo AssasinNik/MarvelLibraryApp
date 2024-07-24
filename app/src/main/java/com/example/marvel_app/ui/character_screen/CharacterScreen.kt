@@ -130,7 +130,7 @@ fun CharacterScreen(
                         modifier = Modifier
                             .background(RedColor)
                             .height(70.dp)
-                            .width(180.dp)
+                            .width(200.dp)
                             .fillMaxWidth()
                             .align(Alignment.CenterHorizontally)
                             .clip(RoundedCornerShape(20.dp))
