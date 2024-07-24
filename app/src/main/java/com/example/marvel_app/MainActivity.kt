@@ -1,6 +1,8 @@
 package com.example.marvel_app
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
@@ -30,9 +32,11 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         installSplashScreen().apply {
             setKeepOnScreenCondition{
                 !viewModel.isReady.value

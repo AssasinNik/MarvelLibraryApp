@@ -199,7 +199,7 @@ fun CharacterScreen(
                         Comics(comics = element)
 
                     }
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(40.dp))
                 }
                 else{
                     Spacer(modifier = Modifier.height(20.dp))
