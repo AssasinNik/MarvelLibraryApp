@@ -28,6 +28,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,13 +77,26 @@ fun HeroListScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(20.dp))
+            IconButton(
+                onClick = { navController.navigate("SettingsScreen") },
+                modifier = Modifier
+                    .padding(top = 40.dp, start = 20.dp, end = 10.dp)
+                    .align(Alignment.End)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = "Go To SettingsScreen",
+                    tint = SearchTextColor,
+                    modifier = Modifier
+                        .size(35.dp),
+                )
+            }
             Image(
                 painter = painterResource(id = R.drawable.marvel_logo),
                 contentDescription = "MarvelLogo",
                 modifier = Modifier
-                    .height(150.dp)
+                    .height(100.dp)
                     .width(200.dp)
-                    .padding(top = 20.dp)
             )
             Text(
                 modifier = Modifier,
@@ -214,8 +230,9 @@ fun MarvelEntry(
             .aspectRatio(1f)
             .background(GrayColor)
             .clickable {
+                val encodedUrl = entry.imageUrl.replace("/", "%2F")
                 navController.navigate(
-                    "HeroDetailScreen/${entry.number}"
+                    "HeroDetailScreen/${entry.number}/${entry.characterName}/${encodedUrl}"
                 )
             }
     ){

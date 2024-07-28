@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.marvel_app.ui.SettingsScreen
 import com.example.marvel_app.ui.character_screen.CharacterScreen
 import com.example.marvel_app.ui.character_screen.CharacterScreenViewModel
 import com.example.marvel_app.ui.hero_list.HeroListScreen
@@ -85,17 +86,39 @@ class MainActivity : ComponentActivity() {
                         HeroListScreen(navController = navController)
                     }
                     composable(
-                        route = "HeroDetailScreen/{heroId}",
+                        route = "SettingsScreen"
+                    ){
+                        SettingsScreen(navController = navController)
+                    }
+                    composable(
+                        route = "HeroDetailScreen/{heroId}/{heroName}/{heroImage}",
                         arguments = listOf(
                             navArgument("heroId"){
                                 type = NavType.IntType
+                            },
+                            navArgument("heroName"){
+                                type = NavType.StringType
+                            },
+                            navArgument("heroImage"){
+                                type = NavType.StringType
                             }
                         )
                     ){
                         val heroId = remember {
                             it.arguments?.getInt("heroId")
                         }
-                        CharacterScreen(navController = navController, heroId = heroId)
+                        val heroName = remember {
+                            it.arguments?.getString("heroName")
+                        }
+                        val heroImage = remember {
+                            it.arguments?.getString("heroImage")
+                        }
+                        CharacterScreen(
+                            navController = navController,
+                            heroId = heroId,
+                            heroName = heroName,
+                            heroImage = heroImage
+                        )
                     }
                 }
             }

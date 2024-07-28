@@ -56,7 +56,9 @@ import com.example.marvel_app.ui.theme.SearchBorderColor
 fun CharacterScreen(
     navController: NavController,
     viewModel: CharacterScreenViewModel = hiltViewModel(),
-    heroId: Int?
+    heroId: Int?,
+    heroName: String?,
+    heroImage: String?
 ){
     LaunchedEffect(key1 = heroId) {
         viewModel.loadHeroInfo(heroId)
@@ -100,56 +102,56 @@ fun CharacterScreen(
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState(), true)
             ){
-                if(!isLoading){
-                    Spacer(modifier = Modifier.height(5.dp))
-                    SubcomposeAsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(character?.imageUrl)
-                            .build(),
-                        contentDescription = character?.characterName,
-                        contentScale = ContentScale.Crop,
-                        filterQuality = FilterQuality.None,
-                        modifier = Modifier
-                            .size(120.dp)
-                            .align(Alignment.CenterHorizontally)
-                            .aspectRatio(1f, matchHeightConstraintsFirst = true)
-                            .border(
-                                width = 2.dp,
-                                color = RedColor,
-                                shape = CircleShape
-                            )
-                            .clip(CircleShape) ,
-                        loading = {
-                            CircularProgressIndicator(
-                                color = SearchBorderColor
-                            )
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(14.dp))
-                    Box(
-                        modifier = Modifier
-                            .background(RedColor)
-                            .height(70.dp)
-                            .width(200.dp)
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally)
-                            .clip(RoundedCornerShape(20.dp))
-                    ){
-                        Text(
-                            text = character?.characterName.toString(),
-                            style = TextStyle(
-                                fontFamily = Poppins,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White,
-                                fontSize = 20.sp
-                            ),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.Center)
+                Spacer(modifier = Modifier.height(5.dp))
+                SubcomposeAsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(heroImage.toString().replace("%2F", "/"))
+                        .build(),
+                    contentDescription = character?.characterName,
+                    contentScale = ContentScale.Crop,
+                    filterQuality = FilterQuality.None,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                        .border(
+                            width = 2.dp,
+                            color = RedColor,
+                            shape = CircleShape
+                        )
+                        .clip(CircleShape) ,
+                    loading = {
+                        CircularProgressIndicator(
+                            color = SearchBorderColor
                         )
                     }
-                    Spacer(modifier = Modifier.height(20.dp))
+                )
+                Spacer(modifier = Modifier.height(14.dp))
+                Box(
+                    modifier = Modifier
+                        .background(RedColor)
+                        .height(70.dp)
+                        .width(200.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        .clip(RoundedCornerShape(20.dp))
+                ){
+                    Text(
+                        text = heroName.toString(),
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            fontSize = 20.sp
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center)
+                    )
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                if(!isLoading){
                     Text(
                         text = "Description",
                         style = TextStyle(

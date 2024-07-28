@@ -71,6 +71,7 @@ class HeroListScreenViewModel @Inject constructor(
                 async { heroRepository.getHeroList("wolver") },
                 async { heroRepository.getHeroList("iron") },
                 async { heroRepository.getHeroList("doctor") },
+                async { heroRepository.getHeroList("ghost") },
                 async { heroRepository.getHeroList("captain") }
             )
 
