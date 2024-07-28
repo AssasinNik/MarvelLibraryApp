@@ -19,11 +19,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -31,12 +31,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.annotation.ExperimentalCoilApi
+import coil.imageLoader
 import com.example.marvel_app.R
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
-import com.example.marvel_app.ui.theme.SearchTextColor
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun SettingsScreen(
     navController: NavController
@@ -93,8 +95,12 @@ fun SettingsScreen(
                     .width(200.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
+            val context = LocalContext.current
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    context.imageLoader.diskCache?.clear()
+                    context.imageLoader.memoryCache?.clear()
+                          },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = RedColor,
                     contentColor = Color.White

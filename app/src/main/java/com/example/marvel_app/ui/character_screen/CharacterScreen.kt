@@ -45,12 +45,16 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
+import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.example.marvel_app.R
 import com.example.marvel_app.data.models.ComicsEntry
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
 import com.example.marvel_app.ui.theme.SearchBorderColor
+import kotlinx.coroutines.Dispatchers
+import okhttp3.Dispatcher
 
 @Composable
 fun CharacterScreen(
@@ -225,10 +229,19 @@ fun Comics(
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
     ){
+        val placeholder = R.drawable.gradient
         SubcomposeAsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-            .data(comics.comicsImage)
-            .build(),
+                .data(comics.comicsImage)
+                .dispatcher(Dispatchers.IO)
+                .placeholder(placeholder)
+                .error(placeholder)
+                .fallback(placeholder)
+                .memoryCacheKey(comics.comicsImage)
+                .diskCacheKey(comics.comicsImage)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .build(),
             contentDescription = comics.comicsName,
             contentScale = ContentScale.Crop,
             filterQuality = FilterQuality.None,
