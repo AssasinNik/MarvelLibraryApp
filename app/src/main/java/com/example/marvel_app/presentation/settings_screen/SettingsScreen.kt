@@ -1,4 +1,4 @@
-package com.example.marvel_app.ui
+package com.example.marvel_app.presentation.settings_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
@@ -41,7 +42,8 @@ import com.example.marvel_app.ui.theme.RedColor
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun SettingsScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: SettingsScreenViewModel = hiltViewModel()
 ){
     Surface(
         color = BackGround,
@@ -100,6 +102,7 @@ fun SettingsScreen(
                 onClick = {
                     context.imageLoader.diskCache?.clear()
                     context.imageLoader.memoryCache?.clear()
+                    viewModel.deleteAll()
                           },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = RedColor,

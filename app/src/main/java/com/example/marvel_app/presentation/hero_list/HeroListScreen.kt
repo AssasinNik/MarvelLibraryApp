@@ -1,4 +1,4 @@
-package com.example.marvel_app.ui.hero_list
+package com.example.marvel_app.presentation.hero_list
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -68,6 +68,7 @@ fun HeroListScreen(
     navController: NavController,
     viewModel: HeroListScreenViewModel = hiltViewModel()
 ){
+
     Surface(
         color = BackGround,
         modifier = Modifier.fillMaxSize()

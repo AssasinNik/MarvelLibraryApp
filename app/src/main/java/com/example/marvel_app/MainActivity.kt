@@ -20,11 +20,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.marvel_app.ui.SettingsScreen
-import com.example.marvel_app.ui.character_screen.CharacterScreen
-import com.example.marvel_app.ui.character_screen.CharacterScreenViewModel
-import com.example.marvel_app.ui.hero_list.HeroListScreen
-import com.example.marvel_app.ui.main_screen.MainViewModel
+import com.example.marvel_app.presentation.settings_screen.SettingsScreen
+import com.example.marvel_app.presentation.character_screen.CharacterScreen
+import com.example.marvel_app.presentation.hero_list.HeroListScreen
+import com.example.marvel_app.presentation.main_screen.MainViewModel
 import com.example.marvel_app.ui.theme.Marvel_appTheme
 import dagger.hilt.android.AndroidEntryPoint
 

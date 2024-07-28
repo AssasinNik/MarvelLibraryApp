@@ -1,8 +1,11 @@
-package com.example.marvel_app.ui.hero_list
+package com.example.marvel_app.presentation.hero_list
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.marvel_app.data.local.Heroes
+import com.example.marvel_app.data.local.HeroesDao
 import com.example.marvel_app.data.models.HeroesListEntry
 import com.example.marvel_app.repository.HeroRepository
 import com.example.marvel_app.util.Constants.PAGE_SIZE
@@ -14,10 +17,15 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.count
+import kotlin.system.exitProcess
 
 @HiltViewModel
 class HeroListScreenViewModel @Inject constructor(
-    private val heroRepository: HeroRepository
+    private val heroRepository: HeroRepository,
+    private val dao: HeroesDao
 ): ViewModel() {
     private var curPage = 0
 
@@ -26,12 +34,14 @@ class HeroListScreenViewModel @Inject constructor(
     var isLoading = mutableStateOf(false)
     var endReached = mutableStateOf(false)
 
+    private lateinit var cachedCharacters: Flow<List<Heroes>>
+
     private var cachedHeroList = listOf<HeroesListEntry>()
     private var isSearchStarting = true
     var isSearching = mutableStateOf(false)
 
     init{
-        loadHeroPaginated()
+        getHeroList()
     }
 
     fun searchMarvelList(query: String){
@@ -60,6 +70,29 @@ class HeroListScreenViewModel @Inject constructor(
     }
 
 
+    fun getHeroList(){
+        viewModelScope.launch {
+            cachedCharacters = dao.selectHeroes()
+            cachedCharacters.collectLatest { characters ->
+                if (characters.isEmpty()) {
+                    loadHeroPaginated()
+                } else {
+                    val heroEntries2 = mutableListOf<HeroesListEntry>()
+                    for (i in characters){
+                        heroEntries2.add(
+                            HeroesListEntry(
+                                i.characterName,
+                                i.imageUrl,
+                                i.number
+                            )
+                        )
+                    }
+                    heroList.value+=heroEntries2
+                }
+            }
+        }
+    }
+
     fun loadHeroPaginated() {
         viewModelScope.launch {
             isLoading.value = true
@@ -79,7 +112,7 @@ class HeroListScreenViewModel @Inject constructor(
             val results = heroRequests.awaitAll()
 
             // Обрабатываем результаты
-            var heroEntries = mutableListOf<HeroesListEntry>()
+            val heroEntries = mutableListOf<HeroesListEntry>()
             for (result in results) {
                 when (result) {
                     is Resource.Success -> {
@@ -100,6 +133,16 @@ class HeroListScreenViewModel @Inject constructor(
                                     entry.id)
                             }
                         })
+                        for (i in heroEntries){
+                            dao.insertHero(
+                                Heroes(
+                                    i.characterName,
+                                    i.imageUrl,
+                                    i.number,
+                                    i.number
+                                )
+                            )
+                        }
                     }
                     is Resource.Error -> {
                         loadError.value = result.message!!
