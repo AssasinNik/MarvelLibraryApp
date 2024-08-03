@@ -149,6 +149,7 @@ class HeroListScreenViewModel @Inject constructor(
                 }
             }
             viewModelScope.launch {
+                dao.deleteHeroes()
                 for (i in heroEntries){
                     dao.insertHero(
                         Heroes(
@@ -160,6 +161,7 @@ class HeroListScreenViewModel @Inject constructor(
                     )
                 }
             }
+            heroList.value = emptyList()
             // Обновляем список героев в UI
             heroList.value += heroEntries
             isLoading.value = false

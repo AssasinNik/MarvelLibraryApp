@@ -189,14 +189,28 @@ fun HeroList(
     val isSearching by remember {
         viewModel.isSearching
     }
-
+    var isRefreshing by remember {
+        mutableStateOf(false)
+    }
+    /*
+    PullToRefreshLazyColumn(
+        isRefreshing = isRefreshing,
+        onRefresh = {
+            isRefreshing=true
+            viewModel.loadHeroPaginated()
+            isRefreshing=false
+                    },
+        heroList = heroList,
+        navController = navController
+    )
+     */
     LazyColumn(contentPadding = PaddingValues(16.dp)) {
-        val itemCount = if(heroList.size%2 == 0){
+        val itemCount = if (heroList.size % 2 == 0) {
             heroList.size / 2
-        }else{
-            heroList.size / 2 +1
+        } else {
+            heroList.size / 2 + 1
         }
-        items(itemCount){
+        items(itemCount) {
             HeroRow(rowIndex = it, list = heroList, navController = navController)
         }
     }

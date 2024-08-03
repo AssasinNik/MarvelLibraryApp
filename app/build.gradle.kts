@@ -116,8 +116,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     // Splashscreen
-    implementation(libs.androidx.core.splashscreen)
-
+    implementation (libs.androidx.core.splashscreen)
     // Room
     implementation (libs.androidx.room.runtime.v261)
     implementation (libs.androidx.room.ktx.v261)
