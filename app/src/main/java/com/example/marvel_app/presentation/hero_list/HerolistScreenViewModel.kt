@@ -1,5 +1,6 @@
 package com.example.marvel_app.presentation.hero_list
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,6 +21,9 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.future.future
+import timber.log.Timber
 import kotlin.system.exitProcess
 
 @HiltViewModel
@@ -40,9 +44,6 @@ class HeroListScreenViewModel @Inject constructor(
     private var isSearchStarting = true
     var isSearching = mutableStateOf(false)
 
-    init{
-        getHeroList()
-    }
 
     fun searchMarvelList(query: String){
         val listToSearch = if(isSearchStarting){
@@ -68,27 +69,35 @@ class HeroListScreenViewModel @Inject constructor(
             isSearching.value = true
         }
     }
-
-
     fun getHeroList(){
         viewModelScope.launch {
+            var cachedHeroList2 = listOf<Heroes>()
+            var flag: Boolean = true
             cachedCharacters = dao.selectHeroes()
-            cachedCharacters.collectLatest { characters ->
+            cachedCharacters.first { characters ->
                 if (characters.isEmpty()) {
                     loadHeroPaginated()
+                    flag = false
+                    false
                 } else {
-                    val heroEntries2 = mutableListOf<HeroesListEntry>()
-                    for (i in characters){
-                        heroEntries2.add(
-                            HeroesListEntry(
-                                i.characterName,
-                                i.imageUrl,
-                                i.number
-                            )
-                        )
-                    }
-                    heroList.value+=heroEntries2
+                    cachedHeroList2 = characters
+                    true
                 }
+            }
+            if (flag){
+                val heroEntries2 = mutableListOf<HeroesListEntry>()
+                for (i in cachedHeroList2) {
+                    isLoading.value=true
+                    heroEntries2.add(
+                        HeroesListEntry(
+                            i.characterName,
+                            i.imageUrl,
+                            i.number
+                        )
+                    )
+                }
+                heroList.value+=heroEntries2
+                isLoading.value=false
             }
         }
     }
@@ -133,20 +142,22 @@ class HeroListScreenViewModel @Inject constructor(
                                     entry.id)
                             }
                         })
-                        for (i in heroEntries){
-                            dao.insertHero(
-                                Heroes(
-                                    i.characterName,
-                                    i.imageUrl,
-                                    i.number,
-                                    i.number
-                                )
-                            )
-                        }
                     }
                     is Resource.Error -> {
                         loadError.value = result.message!!
                     }
+                }
+            }
+            viewModelScope.launch {
+                for (i in heroEntries){
+                    dao.insertHero(
+                        Heroes(
+                            i.characterName,
+                            i.imageUrl,
+                            i.number,
+                            i.number
+                        )
+                    )
                 }
             }
             // Обновляем список героев в UI

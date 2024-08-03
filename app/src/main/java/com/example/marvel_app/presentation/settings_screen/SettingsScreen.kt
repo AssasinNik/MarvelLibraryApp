@@ -73,20 +73,6 @@ fun SettingsScreen(
                             .size(40.dp),
                     )
                 }
-                Text(
-                    text = "Settings",
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        color = Color.White,
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(top = 40.dp)
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
-                )
             }
             Spacer(modifier = Modifier.height(20.dp))
             Image(

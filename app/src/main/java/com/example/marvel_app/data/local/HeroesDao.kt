@@ -13,11 +13,9 @@ interface HeroesDao {
     @Upsert
     fun insertHero(hero: Heroes)
 
-    @Transaction
     @Delete
     fun deleteHero(hero: Heroes)
 
-    @Transaction
     @Query("DELETE FROM heroes")
     fun deleteHeroes()
 

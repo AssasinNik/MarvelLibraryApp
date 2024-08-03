@@ -69,6 +69,10 @@ fun HeroListScreen(
     viewModel: HeroListScreenViewModel = hiltViewModel()
 ){
 
+    LaunchedEffect(key1 = true) {
+        viewModel.getHeroList()
+    }
+
     Surface(
         color = BackGround,
         modifier = Modifier.fillMaxSize()
@@ -193,9 +197,6 @@ fun HeroList(
             heroList.size / 2 +1
         }
         items(itemCount){
-            if( it >= itemCount - 1 && !endReached && !isLoading && !isSearching){
-                viewModel.loadHeroPaginated()
-            }
             HeroRow(rowIndex = it, list = heroList, navController = navController)
         }
     }
@@ -208,7 +209,7 @@ fun HeroList(
         }
         if(loadError.isNotEmpty()){
             RetrySection(error = loadError) {
-                viewModel.loadHeroPaginated()
+                viewModel.getHeroList()
             }
         }
     }
