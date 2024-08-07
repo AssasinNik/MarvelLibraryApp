@@ -1,10 +1,8 @@
 package com.example.marvel_app.presentation.hero_list
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.marvel_app.data.local.Heroes
 import com.example.marvel_app.data.local.HeroesDao
 import com.example.marvel_app.data.models.HeroesListEntry
@@ -12,6 +10,7 @@ import com.example.marvel_app.repository.HeroRepository
 import com.example.marvel_app.util.Constants.PAGE_SIZE
 import com.example.marvel_app.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -19,12 +18,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.future.future
-import timber.log.Timber
-import kotlin.system.exitProcess
 
 @HiltViewModel
 class HeroListScreenViewModel @Inject constructor(
@@ -76,7 +70,7 @@ class HeroListScreenViewModel @Inject constructor(
             cachedCharacters = dao.selectHeroes()
             cachedCharacters.first { characters ->
                 if (characters.isEmpty()) {
-                    loadHeroPaginated()
+                    loadHeroPaginated(false)
                     flag = false
                     false
                 } else {
@@ -102,9 +96,14 @@ class HeroListScreenViewModel @Inject constructor(
         }
     }
 
-    fun loadHeroPaginated() {
-        viewModelScope.launch {
+    fun loadHeroPaginated(isRefresh: Boolean): Deferred<Unit> = viewModelScope.async{
+        if(isRefresh){
+            isLoading.value = false
+        }
+        else{
             isLoading.value = true
+        }
+
 
             // Список запросов (используем список, чтобы потом получить результаты)
             val heroRequests = listOf(
@@ -166,6 +165,4 @@ class HeroListScreenViewModel @Inject constructor(
             heroList.value += heroEntries
             isLoading.value = false
         }
-    }
-
 }

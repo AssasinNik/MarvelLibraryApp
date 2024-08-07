@@ -1,20 +1,11 @@
 package com.example.marvel_app.presentation.hero_list
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animate
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -24,12 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -177,43 +166,17 @@ fun HeroList(
     val heroList by remember {
         viewModel.heroList
     }
-    val endReached by remember{
-        viewModel.endReached
-    }
     val loadError by remember{
         viewModel.loadError
     }
     val isLoading by remember{
         viewModel.isLoading
     }
-    val isSearching by remember {
-        viewModel.isSearching
-    }
-    var isRefreshing by remember {
-        mutableStateOf(false)
-    }
-    /*
     PullToRefreshLazyColumn(
-        isRefreshing = isRefreshing,
-        onRefresh = {
-            isRefreshing=true
-            viewModel.loadHeroPaginated()
-            isRefreshing=false
-                    },
+        viewModel = viewModel,
         heroList = heroList,
         navController = navController
     )
-     */
-    LazyColumn(contentPadding = PaddingValues(16.dp)) {
-        val itemCount = if (heroList.size % 2 == 0) {
-            heroList.size / 2
-        } else {
-            heroList.size / 2 + 1
-        }
-        items(itemCount) {
-            HeroRow(rowIndex = it, list = heroList, navController = navController)
-        }
-    }
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -221,7 +184,7 @@ fun HeroList(
         if(isLoading){
             CircularProgressIndicator(color = SearchBorderColor)
         }
-        if(loadError.isNotEmpty()){
+        else if(loadError.isNotEmpty()){
             RetrySection(error = loadError) {
                 viewModel.getHeroList()
             }
@@ -324,9 +287,16 @@ fun RetrySection(
     onRetry: () -> Unit
 ){
     Column {
-        Text(text = error, color= Color.Red, fontSize = 18.sp)
+        Text(text = error, color= Color.White, fontSize = 18.sp)
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = {onRetry()}, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+        Button(
+            onClick = {onRetry()},
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = SearchBorderColor,
+                contentColor = Color.White
+            )
+        ) {
             Text(text = "Retry")
         }
     }
