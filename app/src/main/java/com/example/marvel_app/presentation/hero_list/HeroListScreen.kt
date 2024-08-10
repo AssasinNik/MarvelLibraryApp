@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +42,6 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.marvel_app.R
 import com.example.marvel_app.data.models.HeroesListEntry
-import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.GrayColor
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
@@ -62,13 +60,9 @@ fun HeroListScreen(
     LaunchedEffect(key1 = true) {
         viewModel.getHeroList()
     }
-
-    Surface(
-        color = BackGround,
-        modifier = Modifier.fillMaxSize()
-    ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(20.dp))
@@ -111,7 +105,6 @@ fun HeroListScreen(
             HeroList(navController = navController)
         }
     }
-}
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
@@ -170,20 +163,22 @@ fun HeroList(
     val loadError by remember{
         viewModel.loadError
     }
-    val isLoading by remember{
+    val isLoading by remember {
         viewModel.isLoading
     }
-    PullToRefreshLazyColumn(
-        viewModel = viewModel,
-        heroList = heroList,
-        navController = navController
-    )
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ){
         if(isLoading){
             CircularProgressIndicator(color = SearchBorderColor)
+        }
+        else if(!isLoading){
+            PullToRefreshLazyGrid(
+                viewModel = viewModel,
+                heroList = heroList,
+                navController = navController
+            )
         }
         else if(loadError.isNotEmpty()){
             RetrySection(error = loadError) {
@@ -249,35 +244,6 @@ fun MarvelEntry(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-    }
-}
-
-
-@Composable
-fun HeroRow(
-    rowIndex: Int,
-    list: List<HeroesListEntry>,
-    navController: NavController
-){
-    Column {
-        Row {
-            MarvelEntry(
-                entry = list[rowIndex * 2],
-                navController = navController,
-                modifier = Modifier.weight(1f)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            if(list.size >= rowIndex * 2 + 2){
-                MarvelEntry(
-                    entry = list[rowIndex * 2 + 1],
-                    navController = navController,
-                    modifier = Modifier.weight(1f)
-                )
-            }else{
-                Spacer(modifier = Modifier.weight(1f))
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 

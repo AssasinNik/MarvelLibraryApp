@@ -15,7 +15,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -44,14 +43,11 @@ import com.example.marvel_app.util.Routes
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    viewModel: SettingsScreenViewModel = hiltViewModel()
+    viewModel: SettingsScreenViewModel = hiltViewModel(),
 ){
-    Surface(
-        color = BackGround,
-        modifier = Modifier.fillMaxSize()
-    ){
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -110,5 +106,4 @@ fun SettingsScreen(
                 )
             }
         }
-    }
 }

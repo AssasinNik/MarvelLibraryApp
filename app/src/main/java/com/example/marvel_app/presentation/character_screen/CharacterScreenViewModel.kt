@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.marvel_app.data.models.CharacterEntry
 import com.example.marvel_app.data.models.ComicsEntry
-import com.example.marvel_app.data.models.HeroesListEntry
 import com.example.marvel_app.repository.HeroRepository
 import com.example.marvel_app.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

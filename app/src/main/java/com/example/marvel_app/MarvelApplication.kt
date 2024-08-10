@@ -3,7 +3,6 @@ package com.example.marvel_app
 import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
-import coil.annotation.ExperimentalCoilApi
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.util.DebugLogger

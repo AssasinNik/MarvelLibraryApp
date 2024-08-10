@@ -1,6 +1,7 @@
 package com.example.marvel_app.presentation.character_screen
 
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -21,7 +22,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -49,21 +49,20 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.marvel_app.R
 import com.example.marvel_app.data.models.ComicsEntry
-import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
 import com.example.marvel_app.ui.theme.SearchBorderColor
 import com.example.marvel_app.util.Routes
 import kotlinx.coroutines.Dispatchers
-import okhttp3.Dispatcher
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun CharacterScreen(
     navController: NavController,
     viewModel: CharacterScreenViewModel = hiltViewModel(),
     heroId: Int?,
     heroName: String?,
-    heroImage: String?
+    heroImage: String?,
 ){
     LaunchedEffect(key1 = heroId) {
         viewModel.loadHeroInfo(heroId)
@@ -78,12 +77,9 @@ fun CharacterScreen(
 
 
 
-    Surface(
-        color = BackGround,
-        modifier = Modifier.fillMaxSize()
-    ) {
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
         ) {
             Box(modifier = Modifier
                 .fillMaxWidth()
@@ -217,7 +213,6 @@ fun CharacterScreen(
                 }
             }
         }
-    }
 }
 
 
