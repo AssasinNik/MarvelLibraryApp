@@ -25,6 +25,7 @@ import com.example.marvel_app.presentation.character_screen.CharacterScreen
 import com.example.marvel_app.presentation.hero_list.HeroListScreen
 import com.example.marvel_app.presentation.main_screen.MainViewModel
 import com.example.marvel_app.ui.theme.Marvel_appTheme
+import com.example.marvel_app.util.Routes
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -74,23 +75,23 @@ class MainActivity : ComponentActivity() {
                 NavHost(
                     navController = navController,
                     startDestination = "MarvelListScreen",
-                    enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(200))},
-                    exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(200))},
-                    popEnterTransition =  { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(200))},
-                    popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(200))}
+                    enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))},
+                    exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(300))},
+                    popEnterTransition =  { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))},
+                    popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(300))}
                 ){
                     composable(
-                        route = "MarvelListScreen"
+                        route = Routes.HERO_LIST_SCREEN
                     ){
                         HeroListScreen(navController = navController)
                     }
                     composable(
-                        route = "SettingsScreen"
+                        route = Routes.SETTINGS_SCREEN
                     ){
                         SettingsScreen(navController = navController)
                     }
                     composable(
-                        route = "HeroDetailScreen/{heroId}/{heroName}/{heroImage}",
+                        route = "${Routes.CHARACTER_SCREEN}/{heroId}/{heroName}/{heroImage}",
                         arguments = listOf(
                             navArgument("heroId"){
                                 type = NavType.IntType

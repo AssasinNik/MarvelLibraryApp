@@ -38,6 +38,7 @@ import com.example.marvel_app.R
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
+import com.example.marvel_app.util.Routes
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -61,7 +62,7 @@ fun SettingsScreen(
 
             ){
                 IconButton(
-                    onClick = { navController.navigate("MarvelListScreen") },
+                    onClick = { navController.navigate(Routes.HERO_LIST_SCREEN) },
                     modifier = Modifier.padding(top = 40.dp, start = 20.dp)
 
                 ) {

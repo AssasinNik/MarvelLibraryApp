@@ -53,6 +53,7 @@ import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
 import com.example.marvel_app.ui.theme.SearchBorderColor
+import com.example.marvel_app.util.Routes
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Dispatcher
 
@@ -88,7 +89,7 @@ fun CharacterScreen(
                 .fillMaxWidth()
             ){
                 IconButton(
-                    onClick = { navController.navigate("MarvelListScreen") },
+                    onClick = { navController.navigate(Routes.HERO_LIST_SCREEN) },
                     modifier = Modifier
                         .padding(top = 40.dp, start = 20.dp)
                 ) {

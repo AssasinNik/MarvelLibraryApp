@@ -21,11 +21,12 @@ class MarvelApplication : Application() {
             return ImageLoader.Builder(this)
                 .memoryCache {
                     MemoryCache.Builder(this)
-                        .maxSizePercent(0.20)
+                        .maxSizePercent(0.1)
                         .build()
                 }
                 .diskCache {
                     DiskCache.Builder()
+                        .maxSizePercent(0.03)
                         .directory(cacheDir.resolve("image_cache"))
                         .maxSizeBytes(5 * 1024 * 1024)
                         .build()

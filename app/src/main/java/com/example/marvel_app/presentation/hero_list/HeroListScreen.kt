@@ -51,6 +51,7 @@ import com.example.marvel_app.ui.theme.SearchBorderColor
 import com.example.marvel_app.ui.theme.SearchColor
 import com.example.marvel_app.ui.theme.SearchTextColor
 import com.example.marvel_app.ui.theme.WhiteColor
+import com.example.marvel_app.util.Routes
 
 @Composable
 fun HeroListScreen(
@@ -72,7 +73,7 @@ fun HeroListScreen(
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             IconButton(
-                onClick = { navController.navigate("SettingsScreen") },
+                onClick = { navController.navigate(Routes.SETTINGS_SCREEN) },
                 modifier = Modifier
                     .padding(top = 40.dp, start = 20.dp, end = 10.dp)
                     .align(Alignment.End)
@@ -211,7 +212,7 @@ fun MarvelEntry(
             .clickable {
                 val encodedUrl = entry.imageUrl.replace("/", "%2F")
                 navController.navigate(
-                    "HeroDetailScreen/${entry.number}/${entry.characterName}/${encodedUrl}"
+                    "${Routes.CHARACTER_SCREEN}/${entry.number}/${entry.characterName}/${encodedUrl}"
                 )
             }
     ){
