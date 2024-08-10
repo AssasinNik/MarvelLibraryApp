@@ -1,30 +1,36 @@
 package com.example.marvel_app.util
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.ui.graphics.Color
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.marvel_app.ui.theme.RedColor
 
-sealed class BottomBarTab(val title: String, val icon: ImageVector, val color: Color, val route: String) {
+sealed class BottomBarTab(
+    val title: String,
+    val icon: ImageVector,
+    val unselected_icon: ImageVector,
+    val route: String)
+{
     data object Profile : BottomBarTab(
         title = "Search",
-        icon = Icons.Rounded.Search,
-        color = RedColor,
-        route = Routes.HERO_LIST_SCREEN
+        icon = Icons.Filled.Search,
+        unselected_icon = Icons.Outlined.Search,
+        route = Routes.SETTINGS_SCREEN
     )
     data object Home : BottomBarTab(
         title = "Home",
-        icon = Icons.Rounded.Home,
-        color = RedColor,
+        icon = Icons.Filled.Home,
+        unselected_icon = Icons.Outlined.Home,
         route = Routes.HERO_LIST_SCREEN
     )
     data object Settings : BottomBarTab(
         title = "Settings",
-        icon = Icons.Rounded.Settings,
-        color = RedColor,
+        icon = Icons.Filled.Settings,
+        unselected_icon = Icons.Outlined.Settings,
         route = Routes.SETTINGS_SCREEN
     )
 }

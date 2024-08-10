@@ -24,7 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.marvel_app.presentation.bottom_navigation_bar.BottomNavigation
+import com.example.marvel_app.presentation.bottom_navigation_bar.BottomNavigationBar
 import com.example.marvel_app.presentation.settings_screen.SettingsScreen
 import com.example.marvel_app.presentation.character_screen.CharacterScreen
 import com.example.marvel_app.presentation.hero_list.HeroListScreen
@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                         backgroundColor = BackGround,
                         bottomBar = {
-                            BottomNavigation(
+                            BottomNavigationBar(
                                 navController
                             )
                         }
