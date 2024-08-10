@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
+import com.example.marvel_app.util.BottomBarTab
 
 
 @Composable
@@ -13,4 +14,9 @@ fun BottomNavigation(
     navController: NavController
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(1) }
+    val tabs = listOf(
+        BottomBarTab.Profile,
+        BottomBarTab.Home,
+        BottomBarTab.Settings,
+    )
 }

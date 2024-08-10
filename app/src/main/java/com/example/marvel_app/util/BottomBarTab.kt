@@ -28,8 +28,3 @@ sealed class BottomBarTab(val title: String, val icon: ImageVector, val color: C
         route = Routes.SETTINGS_SCREEN
     )
 }
-val tabs = listOf(
-    BottomBarTab.Profile,
-    BottomBarTab.Home,
-    BottomBarTab.Settings,
-)

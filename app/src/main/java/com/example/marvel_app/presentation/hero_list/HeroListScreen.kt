@@ -4,10 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -60,26 +64,75 @@ fun HeroListScreen(
     LaunchedEffect(key1 = true) {
         viewModel.getHeroList()
     }
-        Column(
+    Column(modifier = Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.height(20.dp))
+        Row (
             modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(top = 40.dp, start = 20.dp, end = 20.dp)
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-            IconButton(
-                onClick = { navController.navigate(Routes.SETTINGS_SCREEN) },
-                modifier = Modifier
-                    .padding(top = 40.dp, start = 20.dp, end = 10.dp)
-                    .align(Alignment.End)
+            Column(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Go To SettingsScreen",
-                    tint = SearchTextColor,
+                IconButton(
+                    onClick = { navController.navigate(Routes.HERO_LIST_SCREEN) },
                     modifier = Modifier
-                        .size(35.dp),
+                        .size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Go To SearchComicsScreen",
+                        tint = SearchTextColor,
+                        modifier = Modifier
+                            .size(40.dp)
+                    )
+                }
+                Text(
+                    text = "Search" ,
+                    style = TextStyle(
+                        fontFamily = Poppins,
+                        color = SearchTextColor,
+                        fontSize = 12.sp
+                ),
+                textAlign = TextAlign.Center,
                 )
             }
+            Spacer(modifier = Modifier.weight(1f))
+            Column(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                IconButton(
+                    onClick = { navController.navigate(Routes.SETTINGS_SCREEN) },
+                    modifier = Modifier
+                        .size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Go To SettingsScreen",
+                        tint = SearchTextColor,
+                        modifier = Modifier
+                            .size(40.dp),
+                    )
+                }
+                Text(
+                    text = "Settings" ,
+                    style = TextStyle(
+                        fontFamily = Poppins,
+                        color = SearchTextColor,
+                        fontSize = 12.sp
+                    ),
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.marvel_logo),
                 contentDescription = "MarvelLogo",
@@ -105,6 +158,7 @@ fun HeroListScreen(
             HeroList(navController = navController)
         }
     }
+}
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,

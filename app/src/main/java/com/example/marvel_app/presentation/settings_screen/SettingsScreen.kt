@@ -71,14 +71,6 @@ fun SettingsScreen(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
-            Image(
-                painter = painterResource(id = R.drawable.marvel_logo),
-                contentDescription = "MarvelLogo",
-                modifier = Modifier
-                    .height(100.dp)
-                    .width(200.dp)
-            )
             Spacer(modifier = Modifier.weight(1f))
             val context = LocalContext.current
             Button(
