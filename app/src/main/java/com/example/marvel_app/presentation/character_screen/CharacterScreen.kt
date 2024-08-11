@@ -179,7 +179,7 @@ fun CharacterScreen(
                             textAlign = TextAlign.Left,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 20.dp)
+                                .padding(start = 20.dp, end = 10.dp)
                         )
                     }
                     else{
@@ -194,7 +194,7 @@ fun CharacterScreen(
                             textAlign = TextAlign.Left,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 20.dp)
+                                .padding(start = 20.dp, end = 10.dp)
                         )
                     }
                     Spacer(modifier = Modifier.height(10.dp))

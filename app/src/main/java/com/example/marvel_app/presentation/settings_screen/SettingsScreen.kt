@@ -95,6 +95,7 @@ fun SettingsScreen(
                         fontWeight = FontWeight.SemiBold
                     ),
                     textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 20.dp)
                 )
             }
         }

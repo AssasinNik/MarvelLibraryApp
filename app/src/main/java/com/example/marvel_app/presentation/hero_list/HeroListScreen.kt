@@ -37,6 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -137,6 +138,17 @@ fun HeroListScreen(
                 viewModel.searchMarvelList(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Most Popular\uD83D\uDD25",
+                style = TextStyle(
+                    fontFamily = Poppins,
+                    color = Color.White,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.SemiBold
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Start).padding(15.dp)
+            )
             HeroList(navController = navController)
         }
     }
