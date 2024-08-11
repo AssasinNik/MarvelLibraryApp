@@ -80,25 +80,16 @@ fun HeroListScreen(
                 IconButton(
                     onClick = { navController.navigate(Routes.HERO_LIST_SCREEN) },
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(35.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Go To SearchComicsScreen",
                         tint = SearchTextColor,
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(35.dp)
                     )
                 }
-                Text(
-                    text = "Search" ,
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        color = SearchTextColor,
-                        fontSize = 12.sp
-                ),
-                textAlign = TextAlign.Center,
-                )
             }
             Spacer(modifier = Modifier.weight(1f))
             Column(
@@ -108,25 +99,16 @@ fun HeroListScreen(
                 IconButton(
                     onClick = { navController.navigate(Routes.SETTINGS_SCREEN) },
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(35.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Settings,
                         contentDescription = "Go To SettingsScreen",
                         tint = SearchTextColor,
                         modifier = Modifier
-                            .size(40.dp),
+                            .size(35.dp),
                     )
                 }
-                Text(
-                    text = "Settings" ,
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        color = SearchTextColor,
-                        fontSize = 12.sp
-                    ),
-                    textAlign = TextAlign.Center,
-                )
             }
         }
         Column(

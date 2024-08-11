@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Marvel_app" parent="android:Theme.Material.Light.NoActionBar" />
-    
-    <style name="Theme.App.Starting" parent = "Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/background</item>
-        <item name="postSplashScreenTheme">@style/Theme.Marvel_app</item>
-        <item name="android:icon">@drawable/marvel_logo</item>
-    </style>
+    <style name="Theme.App" parent="Theme.AppCompat.DayNight" />
+
+        <style name="Theme.App.Splash" parent="Theme.AppCompat.DayNight">
+            <item name="android:windowBackground">@color/background</item>
+            <item name="android:windowNoTitle">true</item>
+            <item name="android:windowFullscreen">true</item>
+        </style>
 </resources>

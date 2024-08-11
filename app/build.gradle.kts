@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -114,9 +115,6 @@ dependencies {
 
     // Kotlin Serialization для JSON
     implementation(libs.kotlinx.serialization.json)
-
-    // Splashscreen
-    implementation (libs.androidx.core.splashscreen)
     // Room
     implementation (libs.androidx.room.runtime.v261)
     implementation (libs.androidx.room.ktx.v261)
