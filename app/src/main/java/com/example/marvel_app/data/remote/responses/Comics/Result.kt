@@ -1,5 +1,7 @@
 package com.example.marvel_app.data.remote.responses.Comics
 
+import com.example.marvel_app.data.remote.responses.CharacterComics.TextObject
+
 data class Result(
     val characters: Characters,
     val collectedIssues: List<Any>,
@@ -23,7 +25,7 @@ data class Result(
     val resourceURI: String,
     val series: Series,
     val stories: Stories,
-    val textObjects: List<Any>,
+    val textObjects: List<TextObject>,
     val thumbnail: Thumbnail,
     val title: String,
     val upc: String,

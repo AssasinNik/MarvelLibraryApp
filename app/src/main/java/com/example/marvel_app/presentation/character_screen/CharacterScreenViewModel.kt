@@ -51,14 +51,16 @@ class CharacterScreenViewModel @Inject constructor(
                         characterEntry = CharacterEntry(
                             heroInfo.name.capitalize(Locale.ROOT),
                             heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
-                            heroInfo.description
+                            heroInfo.description,
+                            heroInfo.id
                         )
                     }
                     else{
                         characterEntry = CharacterEntry(
                             heroInfo.name.capitalize(Locale.ROOT).take(25)+"...",
                             heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
-                            heroInfo.description
+                            heroInfo.description,
+                            heroInfo.id
                         )
                     }
                     _character.value = characterEntry

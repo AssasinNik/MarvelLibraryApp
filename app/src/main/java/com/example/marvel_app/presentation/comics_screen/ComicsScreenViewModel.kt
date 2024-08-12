@@ -1,16 +1,24 @@
 package com.example.marvel_app.presentation.comics_screen
 
 
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.marvel_app.data.models.ComicsEntry
+import com.example.marvel_app.data.models.CharacterEntry
+import com.example.marvel_app.data.models.ComicsItemEntry
+import com.example.marvel_app.data.models.Creators
+import com.example.marvel_app.data.models.HeroesListEntry
+import com.example.marvel_app.data.remote.responses.Character.Character
 import com.example.marvel_app.repository.HeroRepository
 import com.example.marvel_app.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
@@ -19,8 +27,11 @@ class ComicsScreenViewModel @Inject constructor(
     private val heroRepository: HeroRepository
 ): ViewModel(){
 
-    private var _comics = MutableStateFlow<ComicsEntry?>(null)
-    var comics: StateFlow<ComicsEntry?> = _comics
+    private var _comics = MutableStateFlow<ComicsItemEntry?>(null)
+    var comics: StateFlow<ComicsItemEntry?> = _comics
+
+    var heroList = mutableStateOf<List<CharacterEntry>>(listOf())
+
 
     private var _isLoading = MutableStateFlow(false)
     var isLoading: StateFlow<Boolean> = _isLoading
@@ -32,26 +43,84 @@ class ComicsScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
 
-            val comicsRequest = async { heroRepository.getComics(comicsId) }
-            when(val comicsInfo = comicsRequest.await()){
+            val comicsRequest = heroRepository.getComics(comicsId)
+            when(comicsRequest){
                 is Resource.Success -> {
-                    val result = comicsInfo.data!!.data.results[0]
-                    val comicsEntry = ComicsEntry(
-                        result.title.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
-                        result.description,
-                        result.images[0].path+"."+result.images[0].extension,
-                        result.id
-                    )
+                    val result = comicsRequest.data!!.data.results[0]
+                    val creators: MutableList<Creators> = mutableListOf()
+                    if(result.creators.available > 0){
+                        result.creators.items.forEachIndexed { index, itemX ->
+                            creators += Creators(
+                                itemX.name,
+                                itemX.role
+                            )
+                        }
+                    }
+                    if (result.characters.available > 0){
+                        result.characters.items.forEachIndexed { index, item ->
+                            val url = item.resourceURI
+                            val lastSlashIndex = url.lastIndexOf('/')
+                            val id = url.substring(lastSlashIndex + 1).toIntOrNull()
+                            loadCharacterInfo(id).await()
+                        }
+                    }
+                    if(result.description!=""){
+                        val comicsEntry = ComicsItemEntry(
+                            result.title.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
+                            result.description,
+                            result.images[0].path+"."+result.images[0].extension,
+                            result.id,
+                            creators,
+                            heroList.value
+                        )
+                        Timber.tag("Problem").d("Here")
+                        _comics.value = comicsEntry
+                    }
+                    else{
+                        val comicsEntry = ComicsItemEntry(
+                            result.title.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
+                            result.textObjects[0].text,
+                            result.thumbnail.path+"."+result.thumbnail.extension,
+                            result.id,
+                            creators,
+                            heroList.value
+                        )
+                        Timber.tag("Problem").d("Here")
+                        _comics.value = comicsEntry
+                    }
                     _isLoading.value = false
                     _loadError.value = null
-                    _comics.value = comicsEntry
+
                 }
                 is Resource.Error -> {
-                    _loadError.value = comicsInfo.message
+                    _loadError.value = comicsRequest.message
                     _isLoading.value = false
                 }
             }
         }
     }
 
+    fun loadCharacterInfo(characterId: Int?): Deferred<Unit> = viewModelScope.async {
+            val characterRequest = async { heroRepository.getHeroInfo(characterId) }
+            val characterInfo = characterRequest.await()
+
+            val heroEntries = mutableListOf<CharacterEntry>()
+            when(characterInfo){
+                is Resource.Success -> {
+                    heroEntries.addAll(characterInfo.data!!.data.results.mapIndexed { index, result ->
+                        CharacterEntry(
+                            result.name,
+                            result.thumbnail.path+"."+result.thumbnail.extension,
+                            result.description,
+                            result.id
+                        )
+                    })
+                }
+                is Resource.Error -> {
+                    _loadError.value = characterInfo.message
+                    _isLoading.value = false
+                }
+            }
+            heroList.value+=heroEntries
+    }
 }

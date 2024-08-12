@@ -6,5 +6,6 @@ import androidx.compose.runtime.Immutable
 data class CharacterEntry(
     val characterName: String,
     val imageUrl: String,
-    val description : String
+    val description : String,
+    val number: Int
 )
