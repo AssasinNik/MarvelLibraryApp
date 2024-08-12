@@ -71,14 +71,16 @@ class CharacterScreenViewModel @Inject constructor(
                                         (entry.textObjects.mapIndexed { _, textObject ->
                                             textObject.text
                                         }.toString().substring(1)),
-                                        entry.thumbnail.path + "." + entry.thumbnail.extension
+                                        entry.thumbnail.path + "." + entry.thumbnail.extension,
+                                        entry.id
                                     )
                                 }
                                else{
                                     ComicsEntry(
                                         entry.title,
                                         entry.description,
-                                        entry.thumbnail.path + "." + entry.thumbnail.extension
+                                        entry.thumbnail.path + "." + entry.thumbnail.extension,
+                                        entry.id
                                     )
                                }
                             }

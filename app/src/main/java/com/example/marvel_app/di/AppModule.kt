@@ -2,8 +2,10 @@ package com.example.marvel_app.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.marvel_app.data.local.HeroesDao
-import com.example.marvel_app.data.local.HeroesDatabase
+import com.example.marvel_app.data.local.comics_favourites.ComicsDao
+import com.example.marvel_app.data.local.comics_favourites.ComicsDatabase
+import com.example.marvel_app.data.local.heroes.HeroesDao
+import com.example.marvel_app.data.local.heroes.HeroesDatabase
 import com.example.marvel_app.data.remote.MarvelApi
 import com.example.marvel_app.data.remote.MarvelAuthenticationInterceptor
 import com.example.marvel_app.repository.HeroRepository
@@ -63,16 +65,32 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideHeroesDatabase(app:Application): HeroesDatabase{
+    fun provideHeroesDatabase(app:Application): HeroesDatabase {
         return Room.databaseBuilder(
             app,
             HeroesDatabase::class.java,
-            "countries.db"
+            "heroes.db"
         ).allowMainThreadQueries().build()
     }
 
     @Provides
+    @Singleton
     fun provideHeroesDao(db: HeroesDatabase): HeroesDao {
+        return db.dao
+    }
+
+    @Provides
+    @Singleton
+    fun provideComicsDatabase(app:Application): ComicsDatabase {
+        return Room.databaseBuilder(
+            app,
+            ComicsDatabase::class.java,
+            "comics.db"
+        ).allowMainThreadQueries().build()
+    }
+
+    @Provides
+    fun provideComicsDao(db: ComicsDatabase): ComicsDao {
         return db.dao
     }
 

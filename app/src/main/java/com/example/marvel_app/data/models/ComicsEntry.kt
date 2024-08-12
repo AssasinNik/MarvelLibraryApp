@@ -6,5 +6,6 @@ import androidx.compose.runtime.Immutable
 data class ComicsEntry(
     val comicsName : String,
     val comicsDescription: String?,
-    val comicsImage: String
+    val comicsImage: String,
+    val number : Int
 )

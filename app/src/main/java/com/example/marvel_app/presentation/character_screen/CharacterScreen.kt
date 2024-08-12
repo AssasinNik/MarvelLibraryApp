@@ -4,6 +4,7 @@ package com.example.marvel_app.presentation.character_screen
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -199,8 +200,10 @@ fun CharacterScreen(
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                     for (element in comicsList){
-                        Comics(comics = element)
-
+                        Comics(comics = element){
+                            val encodedUrl = element.comicsImage.replace("/", "%2F")
+                            navController.navigate("${Routes.COMICS_SCREEN}/${element.number}/${element.comicsName}/${encodedUrl}")
+                        }
                     }
                     Spacer(modifier = Modifier.height(40.dp))
                 }
@@ -218,12 +221,16 @@ fun CharacterScreen(
 
 @Composable
 fun Comics(
-    comics : ComicsEntry
+    comics : ComicsEntry,
+    onComicClick: () -> Unit
 ){
     Row (
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 10.dp)
+            .clickable {
+                onComicClick()
+            }
     ){
         val placeholder = R.drawable.gradient
         SubcomposeAsyncImage(

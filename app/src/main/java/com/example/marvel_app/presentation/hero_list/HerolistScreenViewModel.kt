@@ -3,8 +3,8 @@ package com.example.marvel_app.presentation.hero_list
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.marvel_app.data.local.Heroes
-import com.example.marvel_app.data.local.HeroesDao
+import com.example.marvel_app.data.local.heroes.Heroes
+import com.example.marvel_app.data.local.heroes.HeroesDao
 import com.example.marvel_app.data.models.HeroesListEntry
 import com.example.marvel_app.repository.HeroRepository
 import com.example.marvel_app.util.Constants.PAGE_SIZE

@@ -21,6 +21,7 @@ import androidx.navigation.navArgument
 import com.example.marvel_app.presentation.bottom_navigation_bar.BottomNavBar
 import com.example.marvel_app.presentation.settings_screen.SettingsScreen
 import com.example.marvel_app.presentation.character_screen.CharacterScreen
+import com.example.marvel_app.presentation.comics_screen.ComicsScreen
 import com.example.marvel_app.presentation.hero_list.HeroListScreen
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Marvel_appTheme
@@ -96,6 +97,36 @@ class MainActivity : ComponentActivity() {
                                     heroId = heroId,
                                     heroName = heroName,
                                     heroImage = heroImage
+                                )
+                            }
+                            composable(
+                                route = "${Routes.COMICS_SCREEN}/{comicsId}/{comicsName}/{comicsImage}",
+                                arguments = listOf(
+                                    navArgument("comicsId"){
+                                        type = NavType.IntType
+                                    },
+                                    navArgument("comicsName"){
+                                        type = NavType.StringType
+                                    },
+                                    navArgument("comicsImage"){
+                                        type = NavType.StringType
+                                    }
+                                )
+                            ){
+                                val comicsId = remember {
+                                    it.arguments?.getInt("comicsId")
+                                }
+                                val comicsName = remember {
+                                    it.arguments?.getString("comicsName")
+                                }
+                                val comicsImage = remember {
+                                    it.arguments?.getString("comicsImage")
+                                }
+                                ComicsScreen(
+                                    navController = navController,
+                                    comicsId = comicsId,
+                                    comicsName = comicsName,
+                                    comicsImage = comicsImage
                                 )
                             }
                         }

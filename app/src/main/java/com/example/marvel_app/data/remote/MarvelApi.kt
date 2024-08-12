@@ -1,7 +1,8 @@
 package com.example.marvel_app.data.remote
 
 import com.example.marvel_app.data.remote.responses.Character.Character
-import com.example.marvel_app.data.remote.responses.Comics.Comics
+import com.example.marvel_app.data.remote.responses.CharacterComics.Comics
+import com.example.marvel_app.data.remote.responses.Comics.ComicsInfo
 import com.example.marvel_app.data.remote.responses.ListHeroes.ListHeroes
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -23,4 +24,9 @@ interface MarvelApi {
         @Path("id") id: Int?,
         @Query("limit") limit: Int
     ):Comics
+
+    @GET("comics/{id}")
+    suspend fun getComics(
+        @Path("id") id: Int?
+    ): ComicsInfo
 }

@@ -137,17 +137,20 @@ fun HeroListScreen(
             ){
                 viewModel.searchMarvelList(it)
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            val isLoading by remember {
+                viewModel.isLoading
+            }
             Text(
                 text = "Most Popular\uD83D\uDD25",
                 style = TextStyle(
                     fontFamily = Poppins,
                     color = Color.White,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Medium
                 ),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.Start).padding(15.dp)
+                modifier = Modifier.align(Alignment.Start).padding(start = 15.dp, bottom = 8.dp)
             )
             HeroList(navController = navController)
         }

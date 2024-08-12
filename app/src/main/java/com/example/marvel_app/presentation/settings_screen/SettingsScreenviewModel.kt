@@ -1,7 +1,7 @@
 package com.example.marvel_app.presentation.settings_screen
 
 import androidx.lifecycle.ViewModel
-import com.example.marvel_app.data.local.HeroesDao
+import com.example.marvel_app.data.local.heroes.HeroesDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

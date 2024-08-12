@@ -84,7 +84,7 @@ fun SettingsScreen(
                     contentColor = Color.White
                 ),
                 shape = RoundedCornerShape(10.dp), // Задает закругленные углы
-                modifier = Modifier.padding(100.dp) // Задает отступы
+                modifier = Modifier.padding(bottom = 130.dp) // Задает отступы
             ) {
                 Text(
                     text = "Clear Cache",
@@ -95,7 +95,6 @@ fun SettingsScreen(
                         fontWeight = FontWeight.SemiBold
                     ),
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 20.dp)
                 )
             }
         }

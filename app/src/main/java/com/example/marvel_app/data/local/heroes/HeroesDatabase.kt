@@ -1,4 +1,4 @@
-package com.example.marvel_app.data.local
+package com.example.marvel_app.data.local.heroes
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
