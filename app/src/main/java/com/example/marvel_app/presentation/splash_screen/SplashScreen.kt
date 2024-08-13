@@ -2,6 +2,7 @@ package com.example.marvel_app.presentation.splash_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -15,7 +16,7 @@ import com.example.marvel_app.R
 import com.example.marvel_app.ui.theme.BackGround
 
 @Composable
-fun SplashScreen(){
+fun SplashScreen(onPush : () -> Unit){
     Box(
         Modifier
             .fillMaxSize()
@@ -28,6 +29,9 @@ fun SplashScreen(){
                 .height(100.dp)
                 .width(200.dp)
                 .align(Alignment.Center)
+                .clickable {
+                    onPush()
+                }
         )
     }
 }

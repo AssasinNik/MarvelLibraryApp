@@ -5,6 +5,9 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.marvel_app.data.local.comics_favourites.Comics
+import com.example.marvel_app.data.local.comics_favourites.ComicsDao
+import com.example.marvel_app.data.local.heroes.HeroesDao
 import com.example.marvel_app.data.models.CharacterEntry
 import com.example.marvel_app.data.models.ComicsItemEntry
 import com.example.marvel_app.data.models.Creators
@@ -24,7 +27,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ComicsScreenViewModel @Inject constructor(
-    private val heroRepository: HeroRepository
+    private val heroRepository: HeroRepository,
+    private val dao: ComicsDao
 ): ViewModel(){
 
     private var _comics = MutableStateFlow<ComicsItemEntry?>(null)
@@ -38,6 +42,9 @@ class ComicsScreenViewModel @Inject constructor(
 
     private var _loadError = MutableStateFlow<String?>(null)
     var loadError: StateFlow<String?> = _loadError
+
+    private var _isFavorite = MutableStateFlow(false)
+    var isFavorite: StateFlow<Boolean> = _isFavorite
 
     fun loadComicsInfo(comicsId: Int?){
         viewModelScope.launch {
@@ -85,7 +92,6 @@ class ComicsScreenViewModel @Inject constructor(
                             creators,
                             heroList.value
                         )
-                        Timber.tag("Problem").d("Here")
                         _comics.value = comicsEntry
                     }
                     _isLoading.value = false
@@ -122,5 +128,39 @@ class ComicsScreenViewModel @Inject constructor(
                 }
             }
             heroList.value+=heroEntries
+    }
+
+    fun addToFavourites(
+        comicsName: String?,
+        imageUrl: String?,
+        description: String?,
+        number: Int?
+    ){
+        viewModelScope.launch {
+            dao.upsertComics(Comics(comicsName, imageUrl, description, number, number))
+            Timber.tag("Add").d("${comicsName}")
+        }
+        _isFavorite.value = true
+    }
+    fun deleteFavorite(
+        comicsName: String?
+    ){
+        viewModelScope.launch {
+            if (comicsName != null) {
+                dao.deleteComics(comicsName)
+                Timber.tag("Delete").d("${comicsName}")
+            }
+        }
+        _isFavorite.value = false
+    }
+    fun checkFavourite(
+        comicsName: String?
+    ){
+        viewModelScope.async {
+            if (comicsName != null){
+                _isFavorite.value = dao.existsComics(comicsName)
+                Timber.tag("Check").d("${comicsName}")
+            }
+        }
     }
 }

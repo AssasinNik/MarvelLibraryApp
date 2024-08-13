@@ -20,14 +20,12 @@ class SplashActivity : ComponentActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         enableEdgeToEdge()
         setContent {
-            SplashScreen()
+            SplashScreen(){
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                // Close splash activity
+                finish()
+            }
         }
-        Handler(Looper.getMainLooper()).postDelayed({
-            // Start main activity
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            // Close splash activity
-            finish()
-        }, 2000)
     }
 }

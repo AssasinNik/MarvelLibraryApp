@@ -26,10 +26,16 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,11 +78,17 @@ fun ComicsScreen(
     comicsName: String?,
     comicsImage: String?,
 ){
-    LaunchedEffect(key1 = comicsId) {
+    LaunchedEffect(key1 = comicsId, key2 = comicsName) {
         viewModel.loadComicsInfo(comicsId)
+        viewModel.checkFavourite(comicsName)
     }
 
     val comics by viewModel.comics.collectAsState()
+
+    val isFavorite by viewModel.isFavorite.collectAsState()
+
+    val icon = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder
+
 
     BoxWithConstraints(
         modifier = Modifier
@@ -208,19 +220,19 @@ fun ComicsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.Transparent)
-                    .height(100.dp)
+                    .height(130.dp)
             ){
                 Box (
                     modifier = Modifier
                         .padding(top = 30.dp, start = 10.dp, bottom = 8.dp)
-                        .size(40.dp)
+                        .size(45.dp)
                         .background(color = Color.DarkGray, shape = CircleShape)
                     ,
                     contentAlignment = Alignment.Center
                 ){
                     IconButton(onClick = {
                         navController.navigate(Routes.HERO_LIST_SCREEN) },
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(35.dp)
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -228,6 +240,68 @@ fun ComicsScreen(
                             tint = Color.White,
                             modifier = Modifier.size(30.dp)
                         )
+                    }
+                }
+                Column {
+                    Box (
+                        modifier = Modifier
+                            .padding(top = 30.dp, end = 8.dp)
+                            .size(45.dp)
+                            .background(color = Color.DarkGray, shape = CircleShape)
+                        ,
+                        contentAlignment = Alignment.Center
+                    ){
+                        IconButton(onClick = {
+                            if(isFavorite){
+                                viewModel.deleteFavorite(comics?.comicsName)
+                            }
+                            else{
+                                viewModel.addToFavourites(
+                                    comics?.comicsName,
+                                    comics?.comicsImage,
+                                    comics?.comicsDescription,
+                                    comics?.number
+                                )
+                            }
+                        },
+                            modifier = Modifier
+                                .size(35.dp)
+                                .align(Alignment.Center)
+                        ) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = "Add-To-Favourites",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .align(Alignment.Center)
+                            )
+                        }
+                    }
+                    Box (
+                        modifier = Modifier
+                            .padding(top = 10.dp, end = 8.dp)
+                            .size(45.dp)
+                            .background(color = Color.DarkGray, shape = CircleShape)
+                        ,
+                        contentAlignment = Alignment.Center
+                    ){
+                        IconButton(onClick = {
+
+                        },
+                            modifier = Modifier
+                                .size(35.dp)
+                                .align(Alignment.Center)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Share,
+                                contentDescription = "Download",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .align(Alignment.Center)
+                            )
+                        }
                     }
                 }
             }
