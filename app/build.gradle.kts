@@ -121,6 +121,8 @@ dependencies {
     implementation (libs.androidx.room.ktx.v261)
     ksp (libs.androidx.room.compiler.v261)
 
+    implementation (libs.androidx.core.splashscreen)
+
     implementation ("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 
 }
