@@ -16,7 +16,7 @@ import com.example.marvel_app.R
 import com.example.marvel_app.ui.theme.BackGround
 
 @Composable
-fun SplashScreen(onPush : () -> Unit){
+fun SplashScreen(){
     Box(
         Modifier
             .fillMaxSize()
@@ -29,9 +29,6 @@ fun SplashScreen(onPush : () -> Unit){
                 .height(100.dp)
                 .width(200.dp)
                 .align(Alignment.Center)
-                .clickable {
-                    onPush()
-                }
         )
     }
 }

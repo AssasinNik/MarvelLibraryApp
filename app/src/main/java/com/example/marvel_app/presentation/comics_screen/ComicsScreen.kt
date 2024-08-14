@@ -1,6 +1,15 @@
 package com.example.marvel_app.presentation.comics_screen
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.os.Build
+import android.renderscript.Allocation
+import android.renderscript.Element
+import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,11 +49,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -56,6 +69,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
+import coil.compose.rememberImagePainter
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.marvel_app.R
@@ -69,6 +83,7 @@ import com.example.marvel_app.ui.theme.RedColor
 import com.example.marvel_app.ui.theme.SearchBorderColor
 import com.example.marvel_app.util.Routes
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -103,27 +118,40 @@ fun ComicsScreen(
         val imageSize = 120.dp
         val imageOffset = 20.dp
 
-        SubcomposeAsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(comicsImage)
-                .dispatcher(Dispatchers.IO)
-                .placeholder(placeholder)
-                .error(placeholder)
-                .fallback(placeholder)
-                .memoryCacheKey(comicsImage)
-                .diskCacheKey(comicsImage)
-                .diskCachePolicy(CachePolicy.ENABLED)
-                .memoryCachePolicy(CachePolicy.ENABLED)
-                .build(),
-            contentDescription = comicsName,
-            contentScale = ContentScale.Crop,
-            filterQuality = FilterQuality.None,
-            modifier = Modifier
-                .height(maxHeight/3)
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
-                .blur(radius = 10.dp)
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            SubcomposeAsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(comicsImage)
+                    .dispatcher(Dispatchers.IO)
+                    .placeholder(placeholder)
+                    .error(placeholder)
+                    .fallback(placeholder)
+                    .memoryCacheKey(comicsImage)
+                    .diskCacheKey(comicsImage)
+                    .diskCachePolicy(CachePolicy.ENABLED)
+                    .memoryCachePolicy(CachePolicy.ENABLED)
+                    .build(),
+                contentDescription = comicsName,
+                contentScale = ContentScale.Crop,
+                filterQuality = FilterQuality.None,
+                modifier = Modifier
+                    .height(maxHeight / 3)
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+                    .blur(radius = 10.dp)
+            )
+        } else {
+            if (comicsImage != null) {
+                BlurImageFromUrl(
+                    imageUrl = comicsImage,
+                    modifier = Modifier
+                        .height(maxHeight / 3)
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                )
+            }
+        }
+
 
         val contentHeight = screenHeight + 250.dp + imageSize + imageOffset
         Box(modifier = Modifier
@@ -502,4 +530,70 @@ fun HeroEntry(
                 .align(Alignment.CenterVertically)
         )
     }
+}
+
+@Composable
+fun BlurImageFromUrl(
+    imageUrl: String,
+    modifier: Modifier = Modifier,
+    blurRadius: Float = 10f // Adjust blur radius here
+) {
+    val context = LocalContext.current
+    val painter = rememberImagePainter(data = imageUrl)
+
+    val originalBitmap = remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val blurredBitmap = remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    LaunchedEffect(painter) {
+        withContext(Dispatchers.IO) {
+            val drawable = painter.imageLoader.execute(painter.request).drawable
+            if (drawable is BitmapDrawable) {
+                originalBitmap.value = drawable.bitmap
+
+                // Apply blur if the API level is less than 31
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                    blurredBitmap.value = originalBitmap.value?.let { bitmap ->
+                        blurBitmap(context, bitmap, blurRadius)
+                    }
+                } else {
+                    blurredBitmap.value = originalBitmap.value
+                }
+            }
+        }
+    }
+
+    blurredBitmap.value?.let { bitmap ->
+        Image(
+            bitmap = bitmap.asImageBitmap(),
+            contentDescription = null,
+            modifier = modifier,
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+
+fun blurBitmap(context: Context, bitmap: Bitmap, radius: Float): Bitmap {
+    // Convert the bitmap to ARGB_8888 if it's in HARDWARE config
+    val safeBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+
+    val outputBitmap = Bitmap.createBitmap(safeBitmap)
+
+    val renderScript = RenderScript.create(context)
+    val input = Allocation.createFromBitmap(renderScript, safeBitmap)
+    val output = Allocation.createFromBitmap(renderScript, outputBitmap)
+
+    val blurScript = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript))
+    blurScript.setRadius(radius)
+    blurScript.setInput(input)
+    blurScript.forEach(output)
+
+    output.copyTo(outputBitmap)
+    renderScript.destroy()
+
+    return outputBitmap
 }

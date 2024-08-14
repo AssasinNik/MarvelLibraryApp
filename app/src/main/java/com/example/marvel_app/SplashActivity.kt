@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity() {
-    @SuppressLint("SourceLockedOrientationActivity")
+    @SuppressLint("SourceLockedOrientationActivity", "CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val scope = CoroutineScope(Dispatchers.Main)
@@ -49,11 +49,13 @@ class SplashActivity : ComponentActivity() {
                 finish()
             }
             else{
-                SplashScreen(){
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    // Close splash activity
-                    finish()
+                SplashScreen()
+                val intent = Intent(this, MainActivity::class.java)
+                scope.launch {
+                        delay(2000L)
+                        startActivity(intent)
+                        // Close splash activity
+                        finish()
                 }
             }
         }
