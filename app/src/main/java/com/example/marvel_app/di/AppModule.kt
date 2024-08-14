@@ -8,7 +8,9 @@ import com.example.marvel_app.data.local.heroes.HeroesDao
 import com.example.marvel_app.data.local.heroes.HeroesDatabase
 import com.example.marvel_app.data.remote.MarvelApi
 import com.example.marvel_app.data.remote.MarvelAuthenticationInterceptor
+import com.example.marvel_app.data.remote.MarvelCinematicApi
 import com.example.marvel_app.repository.HeroRepository
+import com.example.marvel_app.util.Constants.BASE_CINEMATIC_URL
 import com.example.marvel_app.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -40,6 +42,16 @@ object AppModule {
             .baseUrl(BASE_URL)
             .build()
             .create(MarvelApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMarvelCinameticApi(): MarvelCinematicApi{
+        return Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_CINEMATIC_URL)
+            .build()
+            .create(MarvelCinematicApi::class.java)
     }
 
     @Singleton

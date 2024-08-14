@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -88,7 +89,7 @@ fun ComicsScreen(
     val isFavorite by viewModel.isFavorite.collectAsState()
 
     val icon = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder
-
+    val placeholder = R.drawable.gradient
 
     BoxWithConstraints(
         modifier = Modifier
@@ -101,6 +102,28 @@ fun ComicsScreen(
         val cornerRadius = 20.dp
         val imageSize = 120.dp
         val imageOffset = 20.dp
+
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(comicsImage)
+                .dispatcher(Dispatchers.IO)
+                .placeholder(placeholder)
+                .error(placeholder)
+                .fallback(placeholder)
+                .memoryCacheKey(comicsImage)
+                .diskCacheKey(comicsImage)
+                .diskCachePolicy(CachePolicy.ENABLED)
+                .memoryCachePolicy(CachePolicy.ENABLED)
+                .build(),
+            contentDescription = comicsName,
+            contentScale = ContentScale.Crop,
+            filterQuality = FilterQuality.None,
+            modifier = Modifier
+                .height(maxHeight/3)
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+                .blur(radius = 10.dp)
+        )
 
         val contentHeight = screenHeight + 250.dp + imageSize + imageOffset
         Box(modifier = Modifier
@@ -126,7 +149,6 @@ fun ComicsScreen(
             ) {
                 if (screenWidth <= 480.dp) {
                     Spacer(modifier = Modifier.height(screenHeight / 2 - imageSize / 2 - imageOffset - 250.dp))
-                    val placeholder = R.drawable.gradient
                     SubcomposeAsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(comicsImage)
