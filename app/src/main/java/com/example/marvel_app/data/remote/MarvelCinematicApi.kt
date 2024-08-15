@@ -8,22 +8,22 @@ import retrofit2.http.Query
 interface MarvelCinematicApi {
 
     @GET("movies")
-    fun getMovies(
+    suspend fun getMovies(
         @Query("limit") limit : Int
     ): FilmsInfo
 
     @GET("movies")
-    fun getMoviesByTitle(
+    suspend fun getMoviesByTitle(
         @Query("title") title : String
     ): FilmsInfo
 
     @GET("tvshows")
-    fun getTvShows(
+    suspend fun getTvShows(
         @Query("limit") limit : Int
     ): TvShows
 
     @GET("tvShows")
-    fun getTvShowsByTitle(
+    suspend fun getTvShowsByTitle(
         @Query("title") title : String
     ): TvShows
 

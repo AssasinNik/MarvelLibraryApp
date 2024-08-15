@@ -1,18 +1,15 @@
 package com.example.marvel_app.presentation.comics_screen
 
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.marvel_app.data.local.comics_favourites.Comics
-import com.example.marvel_app.data.local.comics_favourites.ComicsDao
-import com.example.marvel_app.data.local.heroes.HeroesDao
+import com.example.marvel_app.data.local.favourites.Comics
+import com.example.marvel_app.data.local.favourites.ComicsDao
 import com.example.marvel_app.data.models.CharacterEntry
 import com.example.marvel_app.data.models.ComicsItemEntry
 import com.example.marvel_app.data.models.Creators
-import com.example.marvel_app.data.models.HeroesListEntry
-import com.example.marvel_app.data.remote.responses.Character.Character
+import com.example.marvel_app.repository.CinemaRepository
 import com.example.marvel_app.repository.HeroRepository
 import com.example.marvel_app.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,11 +20,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
+import javax.annotation.meta.When
 import javax.inject.Inject
 
 @HiltViewModel
 class ComicsScreenViewModel @Inject constructor(
     private val heroRepository: HeroRepository,
+    private val cinemaRepository: CinemaRepository,
     private val dao: ComicsDao
 ): ViewModel(){
 

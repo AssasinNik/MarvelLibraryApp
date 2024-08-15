@@ -1,4 +1,4 @@
-package com.example.marvel_app.data.local.comics_favourites
+package com.example.marvel_app.data.local.favourites
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

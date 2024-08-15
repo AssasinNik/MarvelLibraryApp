@@ -1,7 +1,6 @@
-package com.example.marvel_app.data.local.comics_favourites
+package com.example.marvel_app.data.local.favourites
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow

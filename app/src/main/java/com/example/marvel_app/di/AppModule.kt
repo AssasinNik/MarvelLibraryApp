@@ -2,13 +2,14 @@ package com.example.marvel_app.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.marvel_app.data.local.comics_favourites.ComicsDao
-import com.example.marvel_app.data.local.comics_favourites.ComicsDatabase
+import com.example.marvel_app.data.local.favourites.ComicsDao
+import com.example.marvel_app.data.local.favourites.ComicsDatabase
 import com.example.marvel_app.data.local.heroes.HeroesDao
 import com.example.marvel_app.data.local.heroes.HeroesDatabase
 import com.example.marvel_app.data.remote.MarvelApi
 import com.example.marvel_app.data.remote.MarvelAuthenticationInterceptor
 import com.example.marvel_app.data.remote.MarvelCinematicApi
+import com.example.marvel_app.repository.CinemaRepository
 import com.example.marvel_app.repository.HeroRepository
 import com.example.marvel_app.util.Constants.BASE_CINEMATIC_URL
 import com.example.marvel_app.util.Constants.BASE_URL
@@ -21,6 +22,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -29,13 +31,20 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideHeroRepository(api: MarvelApi): HeroRepository {
+    fun provideHeroRepository(@Named("Marvel") api: MarvelApi): HeroRepository {
         return HeroRepository(api)
     }
 
     @Singleton
     @Provides
-    fun provideMarvelApi(client: OkHttpClient): MarvelApi {
+    fun provideCinemaRepository(@Named("MarvelCinematic") api: MarvelCinematicApi): CinemaRepository {
+        return CinemaRepository(api)
+    }
+
+    @Singleton
+    @Provides
+    @Named("Marvel")
+    fun provideMarvelApi(@Named("AuthClient") client: OkHttpClient): MarvelApi {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
@@ -46,9 +55,11 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideMarvelCinameticApi(): MarvelCinematicApi{
+    @Named("MarvelCinematic")
+    fun provideMarvelCinameticApi(@Named("NoAuthClient") client: OkHttpClient): MarvelCinematicApi{
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
             .baseUrl(BASE_CINEMATIC_URL)
             .build()
             .create(MarvelCinematicApi::class.java)
@@ -56,6 +67,7 @@ object AppModule {
 
     @Singleton
     @Provides
+    @Named("AuthClient")
     fun provideOkHttpClient(authInterceptor: MarvelAuthenticationInterceptor): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY // Set the desired logging level
@@ -63,6 +75,22 @@ object AppModule {
 
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
+            .addInterceptor(loggingInterceptor) // Add the logging interceptor
+            .connectTimeout(180, TimeUnit.SECONDS)
+            .readTimeout(180, TimeUnit.SECONDS)
+            .build()
+    }
+
+
+    @Singleton
+    @Provides
+    @Named("NoAuthClient")
+    fun provideOkHttpCinemaClient(): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY // Set the desired logging level
+        }
+
+        return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor) // Add the logging interceptor
             .connectTimeout(180, TimeUnit.SECONDS)
             .readTimeout(180, TimeUnit.SECONDS)
