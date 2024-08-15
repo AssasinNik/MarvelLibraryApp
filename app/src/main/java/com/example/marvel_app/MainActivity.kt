@@ -23,6 +23,7 @@ import com.example.marvel_app.presentation.settings_screen.SettingsScreen
 import com.example.marvel_app.presentation.character_screen.CharacterScreen
 import com.example.marvel_app.presentation.comics_screen.ComicsScreen
 import com.example.marvel_app.presentation.hero_list.HeroListScreen
+import com.example.marvel_app.presentation.marvel_start_screen.MarvelStartScreen
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Marvel_appTheme
 import com.example.marvel_app.util.Routes
@@ -53,12 +54,17 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = "MarvelListScreen",
+                            startDestination = Routes.MARVEL_START_SCREEN,
                             enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))},
                             exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(300))},
                             popEnterTransition =  { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left, tween(300))},
                             popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right, tween(300))}
                         ){
+                            composable(
+                                route = Routes.MARVEL_START_SCREEN
+                            ){
+                                MarvelStartScreen(navController = navController)
+                            }
                             composable(
                                 route = Routes.HERO_LIST_SCREEN
                             ){
