@@ -8,6 +8,7 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.widget.Space
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -59,6 +60,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -257,6 +259,7 @@ fun ComicsScreen(
                         .align(Alignment.CenterHorizontally),
                     navController = navController
                 )
+                Spacer(modifier = Modifier.height(15.dp))
             }
         }
         Box (
@@ -345,7 +348,7 @@ fun ComicsScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.Share,
-                                contentDescription = "Download",
+                                contentDescription = "Share",
                                 tint = Color.White,
                                 modifier = Modifier
                                     .size(30.dp)
