@@ -29,7 +29,7 @@ sealed class BottomBarTab(
     data object Favourites : BottomBarTab(
         icon = Icons.Filled.Favorite,
         unselected_icon = Icons.Outlined.FavoriteBorder,
-        route = Routes.SETTINGS_SCREEN
+        route = Routes.FAVOURITES_SCREEN
     )
     data object Settings : BottomBarTab(
         icon = Icons.Filled.Settings,

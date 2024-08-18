@@ -26,6 +26,8 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -67,6 +69,7 @@ fun CharacterScreen(
 ){
     LaunchedEffect(key1 = heroId) {
         viewModel.loadHeroInfo(heroId)
+        viewModel.checkFavourite(heroName)
     }
 
     val comicsList by remember {
@@ -76,23 +79,64 @@ fun CharacterScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val loadError by viewModel.loadError.collectAsState()
 
+    val isFavorite by viewModel.isFavorite.collectAsState()
+
+    val icon = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder
+
 
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Box(modifier = Modifier
+            Row(modifier = Modifier
                 .fillMaxWidth()
             ){
                 IconButton(
                     onClick = { navController.navigate(Routes.HERO_LIST_SCREEN) },
                     modifier = Modifier
-                        .padding(top = 40.dp, start = 20.dp)
+                        .padding(top = 40.dp, start = 16.dp)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back To MainScreen",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(35.dp),
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(
+                    onClick = {
+                        if (isFavorite){
+                            viewModel.deleteFavorite(heroName)
+                        }
+                        else{
+                            if (character?.description == null || character?.description == ""){
+                                val notEmptyDescription = "There is no description about this superhero from Marvel Comics. We hope that information about the character will be added soon"
+                                viewModel.addToFavourites(
+                                    heroName,
+                                    heroImage,
+                                    notEmptyDescription,
+                                    heroId
+                                )
+                            }
+                            else{
+                                viewModel.addToFavourites(
+                                    character?.characterName,
+                                    character?.imageUrl,
+                                    character?.description,
+                                    character?.number
+                                )
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(top = 40.dp, end = 16.dp)
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = "Add to Favourites",
                         tint = Color.White,
                         modifier = Modifier
                             .size(35.dp),

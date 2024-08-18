@@ -106,6 +106,7 @@ fun ComicsScreen(
     val isFavorite by viewModel.isFavorite.collectAsState()
 
     val icon = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder
+
     val placeholder = R.drawable.gradient
 
     BoxWithConstraints(
@@ -310,10 +311,10 @@ fun ComicsScreen(
                             }
                             else{
                                 viewModel.addToFavourites(
-                                    comics?.comicsName,
-                                    comics?.comicsImage,
+                                    comicsName,
+                                    comicsImage,
                                     comics?.comicsDescription,
-                                    comics?.number
+                                    comicsId
                                 )
                             }
                         },

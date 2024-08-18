@@ -22,6 +22,7 @@ import com.example.marvel_app.presentation.bottom_navigation_bar.BottomNavBar
 import com.example.marvel_app.presentation.settings_screen.SettingsScreen
 import com.example.marvel_app.presentation.character_screen.CharacterScreen
 import com.example.marvel_app.presentation.comics_screen.ComicsScreen
+import com.example.marvel_app.presentation.favourites_screen.FavouritesScreen
 import com.example.marvel_app.presentation.hero_list.HeroListScreen
 import com.example.marvel_app.presentation.marvel_start_screen.MarvelStartScreen
 import com.example.marvel_app.ui.theme.BackGround
@@ -74,6 +75,11 @@ class MainActivity : ComponentActivity() {
                                 route = Routes.SETTINGS_SCREEN
                             ){
                                 SettingsScreen(navController = navController)
+                            }
+                            composable(
+                                route = Routes.FAVOURITES_SCREEN
+                            ){
+                                FavouritesScreen(navController = navController)
                             }
                             composable(
                                 route = "${Routes.CHARACTER_SCREEN}/{heroId}/{heroName}/{heroImage}",

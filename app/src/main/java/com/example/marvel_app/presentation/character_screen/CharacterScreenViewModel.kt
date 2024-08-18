@@ -3,6 +3,8 @@ package com.example.marvel_app.presentation.character_screen
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.marvel_app.data.local.favourites.FavouriteDao
+import com.example.marvel_app.data.local.favourites.FavouritesEntity
 import com.example.marvel_app.data.models.CharacterEntry
 import com.example.marvel_app.data.models.ComicsEntry
 import com.example.marvel_app.repository.HeroRepository
@@ -12,12 +14,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class CharacterScreenViewModel @Inject constructor(
-    private val heroRepository: HeroRepository
+    private val heroRepository: HeroRepository,
+    private val dao: FavouriteDao
 ): ViewModel() {
 
     var comicsList = mutableStateOf<List<ComicsEntry>>(listOf())
@@ -30,6 +34,9 @@ class CharacterScreenViewModel @Inject constructor(
 
     private var _loadError = MutableStateFlow<String?>(null)
     var loadError: StateFlow<String?> = _loadError
+
+    private var _isFavorite = MutableStateFlow(false)
+    var isFavorite: StateFlow<Boolean> = _isFavorite
 
     fun loadHeroInfo(heroId: Int?) {
         viewModelScope.launch {
@@ -103,4 +110,50 @@ class CharacterScreenViewModel @Inject constructor(
             }
         }
     }
+
+    fun addToFavourites(
+        name: String?,
+        imageUrl: String?,
+        description: String?,
+        number: Int?,
+        category : String ="heroes"
+    ){
+        viewModelScope.launch {
+            dao.upsertFavourite(
+                FavouritesEntity(
+                    name,
+                    imageUrl,
+                    description,
+                    number,
+                    category,
+                    number)
+            )
+        }
+        _isFavorite.value = true
+        Timber.tag("ADD").d("Add + ${name}")
+    }
+
+    fun deleteFavorite(
+        name: String?
+    ){
+        viewModelScope.launch {
+            if (name != null) {
+                dao.deleteFavourite(name, "heroes")
+            }
+        }
+        _isFavorite.value = false
+        Timber.tag("Delete").d("Delete + ${name}")
+    }
+
+    fun checkFavourite(
+        name: String?
+    ){
+        viewModelScope.async {
+            if (name != null){
+                _isFavorite.value = dao.existsFavourites(name, "heroes")
+            }
+        }
+        Timber.tag("Check").d("Check + ${name} + ${_isFavorite.value}")
+    }
+
 }

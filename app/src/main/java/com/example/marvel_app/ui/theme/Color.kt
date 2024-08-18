@@ -9,4 +9,5 @@ val WhiteColor = Color.White
 val SearchColor = Color(0xFF363636)
 val SearchBorderColor = Color(0xFF696969)
 val SearchTextColor = Color(0xFF7C7C7C)
+val IconsColor = Color(0xFFA6A6A6)
 

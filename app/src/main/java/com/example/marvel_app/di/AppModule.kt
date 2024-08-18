@@ -2,8 +2,8 @@ package com.example.marvel_app.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.marvel_app.data.local.favourites.ComicsDao
-import com.example.marvel_app.data.local.favourites.ComicsDatabase
+import com.example.marvel_app.data.local.favourites.FavouriteDao
+import com.example.marvel_app.data.local.favourites.FavouriteDatabase
 import com.example.marvel_app.data.local.heroes.HeroesDao
 import com.example.marvel_app.data.local.heroes.HeroesDatabase
 import com.example.marvel_app.data.remote.MarvelApi
@@ -121,16 +121,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideComicsDatabase(app:Application): ComicsDatabase {
+    fun provideComicsDatabase(app:Application): FavouriteDatabase {
         return Room.databaseBuilder(
             app,
-            ComicsDatabase::class.java,
-            "comics.db"
+            FavouriteDatabase::class.java,
+            "favourites.db"
         ).allowMainThreadQueries().build()
     }
 
     @Provides
-    fun provideComicsDao(db: ComicsDatabase): ComicsDao {
+    fun provideComicsDao(db: FavouriteDatabase): FavouriteDao {
         return db.dao
     }
 

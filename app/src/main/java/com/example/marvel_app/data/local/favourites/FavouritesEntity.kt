@@ -4,11 +4,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Comics(
-    val comicsName: String?= "",
+data class FavouritesEntity(
+    val name: String?= "",
     val imageUrl: String? = "",
     val description: String? = "",
     val number: Int? = 0,
+    val category: String? = "",
     @PrimaryKey(autoGenerate = true)
     val id: Int?
 )

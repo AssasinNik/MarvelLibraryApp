@@ -4,8 +4,8 @@ package com.example.marvel_app.presentation.comics_screen
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.marvel_app.data.local.favourites.Comics
-import com.example.marvel_app.data.local.favourites.ComicsDao
+import com.example.marvel_app.data.local.favourites.FavouriteDao
+import com.example.marvel_app.data.local.favourites.FavouritesEntity
 import com.example.marvel_app.data.models.CharacterEntry
 import com.example.marvel_app.data.models.ComicsItemEntry
 import com.example.marvel_app.data.models.Creators
@@ -20,14 +20,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
-import javax.annotation.meta.When
 import javax.inject.Inject
 
 @HiltViewModel
 class ComicsScreenViewModel @Inject constructor(
     private val heroRepository: HeroRepository,
-    private val cinemaRepository: CinemaRepository,
-    private val dao: ComicsDao
+    private val dao: FavouriteDao
 ): ViewModel(){
 
     private var _comics = MutableStateFlow<ComicsItemEntry?>(null)
@@ -70,8 +68,9 @@ class ComicsScreenViewModel @Inject constructor(
                             loadCharacterInfo(id).await()
                         }
                     }
+                    val comicsEntry: ComicsItemEntry
                     if(result.description!=""){
-                        val comicsEntry = ComicsItemEntry(
+                        comicsEntry = ComicsItemEntry(
                             result.title.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
                             result.description,
                             result.images[0].path+"."+result.images[0].extension,
@@ -83,14 +82,28 @@ class ComicsScreenViewModel @Inject constructor(
                         _comics.value = comicsEntry
                     }
                     else{
-                        val comicsEntry = ComicsItemEntry(
-                            result.title.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
-                            result.textObjects[0].text,
-                            result.thumbnail.path+"."+result.thumbnail.extension,
-                            result.id,
-                            creators,
-                            heroList.value
-                        )
+                        val notEmptyDescription = "There is no information about this comics in our database"
+                        if(result.textObjects[0].text == "" || result.textObjects[0].text == null){
+                            comicsEntry = ComicsItemEntry(
+                                result.title.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
+                                notEmptyDescription,
+                                result.thumbnail.path+"."+result.thumbnail.extension,
+                                result.id,
+                                creators,
+                                heroList.value
+                            )
+                        }
+                        else{
+                            comicsEntry = ComicsItemEntry(
+                                result.title.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
+                                result.textObjects[0].text,
+                                result.thumbnail.path+"."+result.thumbnail.extension,
+                                result.id,
+                                creators,
+                                heroList.value
+                            )
+                        }
+
                         _comics.value = comicsEntry
                     }
                     _isLoading.value = false
@@ -105,7 +118,7 @@ class ComicsScreenViewModel @Inject constructor(
         }
     }
 
-    fun loadCharacterInfo(characterId: Int?): Deferred<Unit> = viewModelScope.async {
+    private fun loadCharacterInfo(characterId: Int?): Deferred<Unit> = viewModelScope.async {
             val characterRequest = async { heroRepository.getHeroInfo(characterId) }
             val characterInfo = characterRequest.await()
 
@@ -133,33 +146,58 @@ class ComicsScreenViewModel @Inject constructor(
         comicsName: String?,
         imageUrl: String?,
         description: String?,
-        number: Int?
+        number: Int?,
+        category : String ="comics"
     ){
-        viewModelScope.launch {
-            dao.upsertComics(Comics(comicsName, imageUrl, description, number, number))
-            Timber.tag("Add").d("${comicsName}")
+        val notEmptyDescription = "There is no information about comics in our database"
+        if (description == "" || description == null){
+            viewModelScope.launch {
+                dao.upsertFavourite(
+                    FavouritesEntity(
+                        comicsName,
+                        imageUrl,
+                        notEmptyDescription,
+                        number,
+                        category,
+                        number)
+                )
+            }
+        }
+        else{
+            viewModelScope.launch {
+                dao.upsertFavourite(
+                    FavouritesEntity(
+                        comicsName,
+                        imageUrl,
+                        description,
+                        number,
+                        category,
+                        number)
+                )
+            }
         }
         _isFavorite.value = true
+        Timber.tag("ADD").d("Add + ${comicsName}")
     }
     fun deleteFavorite(
         comicsName: String?
     ){
         viewModelScope.launch {
             if (comicsName != null) {
-                dao.deleteComics(comicsName)
-                Timber.tag("Delete").d("${comicsName}")
+                dao.deleteFavourite(comicsName, "comics")
             }
         }
         _isFavorite.value = false
+        Timber.tag("Delete").d("Delete + ${comicsName}")
     }
     fun checkFavourite(
         comicsName: String?
     ){
         viewModelScope.async {
             if (comicsName != null){
-                _isFavorite.value = dao.existsComics(comicsName)
-                Timber.tag("Check").d("${comicsName}")
+                _isFavorite.value = dao.existsFavourites(comicsName, "comics")
             }
         }
+        Timber.tag("Check").d("Check + ${comicsName} + ${_isFavorite.value}")
     }
 }

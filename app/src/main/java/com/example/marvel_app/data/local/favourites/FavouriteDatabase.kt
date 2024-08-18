@@ -4,10 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [Comics::class],
+    entities = [FavouritesEntity::class],
     exportSchema = false,
     version = 7
 )
-abstract class ComicsDatabase: RoomDatabase(){
-    abstract val dao: ComicsDao
+abstract class FavouriteDatabase: RoomDatabase(){
+    abstract val dao: FavouriteDao
 }
