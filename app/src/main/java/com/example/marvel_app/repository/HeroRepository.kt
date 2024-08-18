@@ -22,6 +22,24 @@ class HeroRepository @Inject constructor(
         return Resource.Success(response)
     }
 
+    suspend fun getComicsList(name: String, limit: Int): Resource<Comics> {
+        val response = try {
+            api.getComicsList(name, limit)
+        } catch (e: Exception) {
+            return Resource.Error("An unknown error")
+        }
+        return Resource.Success(response)
+    }
+
+    suspend fun getHeroListLimit(name: String, limit: Int): Resource<ListHeroes> {
+        val response = try {
+            api.getHeroListLimit(name, limit)
+        } catch (e: Exception) {
+            return Resource.Error("An unknown error")
+        }
+        return Resource.Success(response)
+    }
+
     suspend fun getHeroInfo(heroId: Int?): Resource<Character> {
         val response = try {
             api.getHero(heroId)

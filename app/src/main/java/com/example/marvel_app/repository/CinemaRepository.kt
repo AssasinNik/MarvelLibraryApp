@@ -12,9 +12,9 @@ import javax.inject.Inject
 class CinemaRepository @Inject constructor(
     private val api: MarvelCinematicApi
 ) {
-    suspend fun getMovies(limit: Int): Resource<FilmsInfo>{
+    suspend fun getMovies(limit: Int, title: String): Resource<FilmsInfo>{
         val response = try {
-            api.getMovies(limit)
+            api.getMovies(limit,"title=$title")
         } catch (e: Exception) {
             return Resource.Error("An unknown error")
         }
@@ -22,15 +22,15 @@ class CinemaRepository @Inject constructor(
     }
     suspend fun getMoviesByTitle(title: String): Resource<FilmsInfo>{
         val response = try {
-            api.getMoviesByTitle(title)
+            api.getMoviesByTitle("title=$title")
         } catch (e: Exception) {
             return Resource.Error("An unknown error")
         }
         return Resource.Success(response)
     }
-    suspend fun getTvShows(limit: Int): Resource<TvShows>{
+    suspend fun getTvShows(limit: Int, title: String): Resource<TvShows>{
         val response = try {
-            api.getTvShows(limit)
+            api.getTvShows(limit,"title=$title")
         } catch (e: Exception) {
             return Resource.Error("An unknown error")
         }
@@ -38,7 +38,7 @@ class CinemaRepository @Inject constructor(
     }
     suspend fun getTvShowsByTitle(title: String): Resource<TvShows>{
         val response = try {
-            api.getTvShowsByTitle(title)
+            api.getTvShowsByTitle("title=$title")
         } catch (e: Exception) {
             return Resource.Error("An unknown error")
         }

@@ -63,6 +63,7 @@ class HeroListScreenViewModel @Inject constructor(
             isSearching.value = true
         }
     }
+
     fun getHeroList(){
         viewModelScope.launch {
             var cachedHeroList2 = listOf<Heroes>()
@@ -103,7 +104,6 @@ class HeroListScreenViewModel @Inject constructor(
         else{
             isLoading.value = true
         }
-
 
             // Список запросов (используем список, чтобы потом получить результаты)
             val heroRequests = listOf(

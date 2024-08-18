@@ -25,6 +25,7 @@ import com.example.marvel_app.presentation.comics_screen.ComicsScreen
 import com.example.marvel_app.presentation.favourites_screen.FavouritesScreen
 import com.example.marvel_app.presentation.hero_list.HeroListScreen
 import com.example.marvel_app.presentation.marvel_start_screen.MarvelStartScreen
+import com.example.marvel_app.presentation.search_screen.SearchScreen
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Marvel_appTheme
 import com.example.marvel_app.util.Routes
@@ -75,6 +76,11 @@ class MainActivity : ComponentActivity() {
                                 route = Routes.SETTINGS_SCREEN
                             ){
                                 SettingsScreen(navController = navController)
+                            }
+                            composable(
+                                route = Routes.SEARCH_SCREEN
+                            ){
+                                SearchScreen(navController = navController)
                             }
                             composable(
                                 route = Routes.FAVOURITES_SCREEN

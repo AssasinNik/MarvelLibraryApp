@@ -9,22 +9,24 @@ interface MarvelCinematicApi {
 
     @GET("movies")
     suspend fun getMovies(
-        @Query("limit") limit : Int
+        @Query("limit") limit : Int,
+        @Query("filter") title : String,
     ): FilmsInfo
 
     @GET("movies")
     suspend fun getMoviesByTitle(
-        @Query("title") title : String
+        @Query("filter") title : String
     ): FilmsInfo
 
     @GET("tvshows")
     suspend fun getTvShows(
-        @Query("limit") limit : Int
+        @Query("limit") limit : Int,
+        @Query("filter") title : String
     ): TvShows
 
     @GET("tvShows")
     suspend fun getTvShowsByTitle(
-        @Query("title") title : String
+        @Query("filter") title : String
     ): TvShows
 
 }

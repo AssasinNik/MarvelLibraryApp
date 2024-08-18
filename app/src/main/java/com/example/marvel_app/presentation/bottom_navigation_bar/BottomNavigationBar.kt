@@ -43,7 +43,7 @@ fun BottomNavBar(
     )
 
     // Show the BottomNavBar only on specific screens
-    if (currentDestination?.route in setOf(Routes.HERO_LIST_SCREEN, Routes.SETTINGS_SCREEN, Routes.FAVOURITES_SCREEN)) {
+    if (currentDestination?.route in setOf(Routes.HERO_LIST_SCREEN, Routes.SETTINGS_SCREEN, Routes.FAVOURITES_SCREEN, Routes.SEARCH_SCREEN)) {
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
@@ -106,6 +106,7 @@ fun BottomNavBar(
 fun checkCurrentDestination(currentScreen: String?): Int {
     return when (currentScreen) {
         Routes.HERO_LIST_SCREEN -> 0
+        Routes.SEARCH_SCREEN -> 1
         Routes.FAVOURITES_SCREEN -> 2
         Routes.SETTINGS_SCREEN -> 3
         else -> 0

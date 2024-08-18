@@ -14,6 +14,12 @@ interface MarvelApi {
         @Query("nameStartsWith") name: String
     ): ListHeroes
 
+    @GET("characters")
+    suspend fun getHeroListLimit(
+        @Query("nameStartsWith") name: String,
+        @Query("limit") limit: Int
+    ): ListHeroes
+
     @GET("characters/{id}")
     suspend fun getHero(
         @Path("id") id: Int?
@@ -24,6 +30,13 @@ interface MarvelApi {
         @Path("id") id: Int?,
         @Query("limit") limit: Int
     ):Comics
+
+    @GET("comics")
+    suspend fun getComicsList(
+        @Query("titleStartsWith") name: String,
+        @Query("limit") limit: Int
+    ):Comics
+
 
     @GET("comics/{id}")
     suspend fun getComics(

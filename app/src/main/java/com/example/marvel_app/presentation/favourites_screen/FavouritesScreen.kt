@@ -114,7 +114,7 @@ fun CategoryBox(nameCategory: String, width: Dp, icon: Int) {
                     fontFamily = Poppins,
                     color = Color.White,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 25.sp
+                    fontSize = 20.sp
                 ),
                 textAlign = TextAlign.Left,
                 modifier = Modifier

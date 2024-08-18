@@ -24,7 +24,7 @@ sealed class BottomBarTab(
     data object Search : BottomBarTab(
         icon = Icons.Filled.Search,
         unselected_icon = Icons.Outlined.Search,
-        route = Routes.SETTINGS_SCREEN
+        route = Routes.SEARCH_SCREEN
     )
     data object Favourites : BottomBarTab(
         icon = Icons.Filled.Favorite,
