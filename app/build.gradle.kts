@@ -125,6 +125,8 @@ dependencies {
 
     implementation (libs.androidx.core.splashscreen)
 
+    //Webview for Trailers
+    implementation (libs.compose.webview)
 
     implementation ("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 

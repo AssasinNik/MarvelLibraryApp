@@ -3,6 +3,7 @@ accompanistCoil = "0.7.0"
 agp = "8.5.0"
 androidFastblur = "1.0.3"
 coilCompose = "2.4.0"
+composeWebview = "0.33.6"
 converterGson = "2.9.0"
 coreSplashscreen = "1.0.1"
 coreSplashscreenVersion = "1.0.1"
@@ -60,6 +61,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-runtime-v261 = { module = "androidx.room:room-runtime", version.ref = "roomRuntimeVersion" }
 coil = { module = "io.coil-kt:coil", version.ref = "coilCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+compose-webview = { module = "io.github.kevinnzou:compose-webview", version.ref = "composeWebview" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 dagger-hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
