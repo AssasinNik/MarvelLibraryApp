@@ -1,8 +1,8 @@
 package com.example.marvel_app.presentation.search_screen
 
-import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,12 +43,14 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.marvel_app.R
 import com.example.marvel_app.data.models.SearchResultEntry
+import com.example.marvel_app.presentation.reusable.SearchBar
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
 import com.example.marvel_app.ui.theme.SearchBorderColor
 import com.example.marvel_app.ui.theme.SearchColor
 import com.example.marvel_app.ui.theme.SearchTextColor
 import com.example.marvel_app.ui.theme.WhiteColor
+import com.example.marvel_app.util.Routes
 import kotlinx.coroutines.Dispatchers
 
 @Composable
@@ -82,7 +84,7 @@ fun SearchScreen(
                 .padding(start = 15.dp, bottom = 8.dp)
         )
         Spacer(modifier = Modifier.height(20.dp))
-        SearchBarGlobal(
+        SearchBar(
             hint = "Search",
             modifier = Modifier.padding(8.dp)
         ) { query ->
@@ -128,8 +130,31 @@ fun ResultSection(
 
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         itemsIndexed(resultList) { index, result ->
-            ResultEntry(result = result)
+            ResultEntry(result = result){
+                when (result.type) {
+                    "hero" -> {
+                        val encodedUrl = result.imageUrl?.replace("/", "%2F")
+                        navController.navigate(
+                            "${Routes.CHARACTER_SCREEN}/${result.number}/${result.name}/${encodedUrl}"
+                        )
+                    }
+                    "comics" -> {
+                        val encodedUrl = result.imageUrl?.replace("/", "%2F")
+                        navController.navigate(
+                            "${Routes.COMICS_SCREEN}/${result.number}/${result.name}/${encodedUrl}"
+                        )
+                    }
+                    "film" -> {
+                        val encodedUrl = result.imageUrl?.replace("/", "%2F")
+                        navController.navigate(
+                            "${Routes.FILM_SCREEN}/${result.number}/${result.name}/${encodedUrl}"
+                        )
+                    }
+                    "tvShow" -> {
 
+                    }
+                }
+            }
             if (index == resultList.size - 1) {
                 Spacer(modifier = Modifier.height(150.dp))
             }
@@ -139,12 +164,16 @@ fun ResultSection(
 
 @Composable
 fun ResultEntry(
-    result: SearchResultEntry
+    result: SearchResultEntry,
+    onTap:() -> Unit
 ){
     Row (
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, top = 10.dp)
+            .clickable {
+                onTap()
+            }
     ){
         val placeholder = R.drawable.gradient
         SubcomposeAsyncImage(
@@ -228,45 +257,5 @@ fun ResultEntry(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun SearchBarGlobal(
-    modifier: Modifier = Modifier,
-    hint: String = "",
-    onSearch: (String) -> Unit = {}
-) {
-    var text by remember { mutableStateOf("") }
-
-    Box(modifier = modifier) {
-        TextField(
-            modifier = Modifier
-                .border(2.dp, color = SearchBorderColor, shape = RoundedCornerShape(15.dp))
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(15.dp)),
-            value = text,
-            placeholder = {
-                Text(
-                    modifier = Modifier.align(Alignment.Center),
-                    text = hint,
-                    style = TextStyle(color = SearchTextColor, fontSize = 18.sp)
-                )
-            },
-            onValueChange = {
-                text = it
-                onSearch(it)  // Вызов функции поиска с новым текстом
-            },
-            maxLines = 1,
-            singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = SearchColor,
-                textColor = SearchTextColor,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = SearchTextColor
-            ),
-            textStyle = TextStyle(color = WhiteColor, fontSize = 18.sp),
-        )
     }
 }

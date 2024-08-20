@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-08-18T12:59:54.143528Z">
+        <DropdownSelection timestamp="2024-08-20T10:15:36.287813Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=XTX7N19104000452" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/nikitacerenkov/.android/avd/Tecno_Spark_API_34.avd" />
             </handle>
           </Target>
         </DropdownSelection>

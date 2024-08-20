@@ -23,6 +23,7 @@ import com.example.marvel_app.presentation.settings_screen.SettingsScreen
 import com.example.marvel_app.presentation.character_screen.CharacterScreen
 import com.example.marvel_app.presentation.comics_screen.ComicsScreen
 import com.example.marvel_app.presentation.favourites_screen.FavouritesScreen
+import com.example.marvel_app.presentation.film_screen.FilmScreen
 import com.example.marvel_app.presentation.hero_list.HeroListScreen
 import com.example.marvel_app.presentation.marvel_start_screen.MarvelStartScreen
 import com.example.marvel_app.presentation.search_screen.SearchScreen
@@ -145,6 +146,36 @@ class MainActivity : ComponentActivity() {
                                     comicsId = comicsId,
                                     comicsName = comicsName,
                                     comicsImage = comicsImage
+                                )
+                            }
+                            composable(
+                                route = "${Routes.FILM_SCREEN}/{filmId}/{filmName}/{filmImage}",
+                                arguments = listOf(
+                                    navArgument("filmId"){
+                                        type = NavType.IntType
+                                    },
+                                    navArgument("filmName"){
+                                        type = NavType.StringType
+                                    },
+                                    navArgument("filmImage"){
+                                        type = NavType.StringType
+                                    }
+                                )
+                            ){
+                                val filmId = remember {
+                                    it.arguments?.getInt("filmId")
+                                }
+                                val filmName = remember {
+                                    it.arguments?.getString("filmName")
+                                }
+                                val filmImage = remember {
+                                    it.arguments?.getString("filmImage")
+                                }
+                                FilmScreen(
+                                    navController = navController,
+                                    filmId = filmId,
+                                    filmName = filmName,
+                                    filmImage = filmImage
                                 )
                             }
                         }

@@ -47,6 +47,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.marvel_app.R
 import com.example.marvel_app.data.models.HeroesListEntry
+import com.example.marvel_app.presentation.reusable.SearchBar
 import com.example.marvel_app.ui.theme.GrayColor
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
@@ -156,52 +157,7 @@ fun HeroListScreen(
         }
     }
 }
-@Composable
-fun SearchBar(
-    modifier: Modifier = Modifier,
-    hint: String = "",
-    onSearch: (String) -> Unit = {}
-){
-    var text by remember {
-        mutableStateOf("")
-    }
-    var isHintDisplayed by remember {
-        mutableStateOf(hint != "")
-    }
 
-    Box(modifier = modifier) {
-        TextField(
-            modifier = Modifier
-                .border(2.dp, color = SearchBorderColor, shape = RoundedCornerShape(15.dp))
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(15.dp)),
-            value = text,
-            placeholder = {
-                Text(modifier = Modifier
-                    .align(Alignment.Center),
-                    text = hint,
-                    style = TextStyle(
-                        color = SearchTextColor,
-                        fontSize = 18.sp)
-                )
-            },
-            onValueChange = {
-                text = it
-                onSearch(it)
-            },
-            maxLines = 1,
-            singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = SearchColor,
-                textColor = SearchTextColor,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = SearchTextColor
-            ),
-            textStyle = TextStyle(color = WhiteColor, fontSize = 18.sp),
-        )
-    }
-}
 
 @Composable
 fun HeroList(
