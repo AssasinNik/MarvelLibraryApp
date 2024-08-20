@@ -230,6 +230,19 @@ fun FilmScreen(
                 Spacer(modifier = Modifier.height(25.dp))
                 if (!isLoading){
                     Text(
+                        text = "Description",
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            color = Color.White,
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Medium
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 15.dp, bottom = 8.dp)
+                    )
+                    Text(
                         text = film?.description.toString(),
                         style = TextStyle(
                             fontFamily = Poppins,
@@ -240,10 +253,25 @@ fun FilmScreen(
                         textAlign = TextAlign.Left,
                         modifier = Modifier
                             .align(Alignment.Start)
-                            .padding(start = 8.dp, end = 8.dp)
+                            .padding(start = 13.dp, end = 13.dp)
                     )
+                    Spacer(modifier = Modifier.height(30.dp))
                     if(film?.trailerUrl != null || film?.trailerUrl != ""){
+                        Text(
+                            text = "Trailer",
+                            style = TextStyle(
+                                fontFamily = Poppins,
+                                color = Color.White,
+                                fontSize = 25.sp,
+                                fontWeight = FontWeight.Medium
+                            ),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .align(Alignment.Start)
+                                .padding(start = 20.dp, bottom = 8.dp)
+                        )
                         TrailerVideo(videoUrl = film?.trailerUrl)
+                        Spacer(modifier = Modifier.height(100.dp))
                     }
                 }
                 else{
@@ -498,7 +526,10 @@ fun YoutubeVideoPlayer(videoId: String) {
     AndroidView(
         factory = { webView },
         modifier = Modifier
-            .fillMaxSize()
+            .padding(horizontal = 8.dp)
+            .fillMaxWidth()
+            .shadow(5.dp, RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(10.dp))
             .alpha(if (isLoading) 0f else 1f)
     ) { view ->
         view.loadDataWithBaseURL(
@@ -521,8 +552,8 @@ fun getHTMLData(videoId: String): String {
                     var player;
                     function onYouTubeIframeAPIReady() {
                         player = new YT.Player('player', {
-                            height: '450',
-                            width: '650',
+                            height: '675',
+                            width: '1000',
                             videoId: '$videoId',
                             playerVars: {
                                 'playsinline': 1
@@ -570,7 +601,11 @@ fun BrightcovePlayer(
                     .height(240.dp),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator() // Индикатор загрузки
+                CircularProgressIndicator(
+                    color = SearchBorderColor,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                ) // Индикатор загрузки
             }
         }
 
@@ -581,6 +616,7 @@ fun BrightcovePlayer(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
                 .height(240.dp)
+                .clip(RoundedCornerShape(10.dp))
                 .alpha(if (isLoading) 0f else 1f), // Прозрачность для плавного перехода
             navigator = navigator,
             onCreated = { webView ->
