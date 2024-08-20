@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -28,6 +29,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -59,6 +61,7 @@ import com.example.marvel_app.data.models.FilmEntry
 import com.example.marvel_app.presentation.reusable.BlurImageFromUrl
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Poppins
+import com.example.marvel_app.ui.theme.SearchBorderColor
 import com.example.marvel_app.util.Routes
 import kotlinx.coroutines.Dispatchers
 
@@ -70,15 +73,21 @@ fun FilmScreen(
     filmName: String?,
     filmImage: String?
 ){
+
+    LaunchedEffect(key1 = 1) {
+        if (filmName != null) {
+            viewModel.loadFilmInfo(filmName)
+        }
+        viewModel.checkFavourite(filmName)
+    }
+
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(BackGround)
     ) {
         val height = maxHeight
-        val width = maxWidth
-
-        val screenWidth = maxWidth
         val screenHeight = maxHeight
         val rectHeight = screenHeight / 2
         val cornerRadius = 20.dp
@@ -87,6 +96,9 @@ fun FilmScreen(
 
         val isFavorite by remember {
             viewModel.isFavorite
+        }
+        val isLoading by remember {
+            viewModel.isLoading
         }
 
         val film by viewModel.film.collectAsState()
@@ -151,12 +163,13 @@ fun FilmScreen(
 
             Spacer(modifier = Modifier.size(20.dp))
 
-            OverviewBox(result = film)
+            OverviewBox(result = film, viewModel = viewModel)
         }
         
         val contentHeight = height + 250.dp + imageSize + imageOffset
         Box(modifier = Modifier
             .fillMaxWidth()
+            .align(Alignment.Center)
             .verticalScroll(rememberScrollState(), true)
             .padding(top = 250.dp)
         ){
@@ -171,6 +184,49 @@ fun FilmScreen(
                     size = Size(size.width, contentHeight.toPx()*2),
                     cornerRadius = CornerRadius(cornerRadius.toPx(), cornerRadius.toPx())
                 )
+            }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(top = 250.dp)
+                    .align(Alignment.TopCenter)
+            ) {
+                Text(
+                    text = filmName.toString(),
+                    style = TextStyle(
+                        fontFamily = Poppins,
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 30.sp
+                    ),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+                )
+                Spacer(modifier = Modifier.height(25.dp))
+                if (!isLoading){
+                    Text(
+                        text = film?.description.toString(),
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            color = Color.White,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 18.sp
+                        ),
+                        textAlign = TextAlign.Left,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 8.dp, end = 8.dp)
+                    )
+                }
+                else{
+                    Spacer(modifier = Modifier.height(20.dp))
+                    CircularProgressIndicator(
+                        color = SearchBorderColor,
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                    )
+                }
             }
         }
 
@@ -219,7 +275,17 @@ fun FilmScreen(
                     ) {
                         IconButton(
                             onClick = {
-
+                                if(isFavorite){
+                                    viewModel.deleteFavorite(filmName)
+                                }
+                                else{
+                                    viewModel.addToFavourites(
+                                        filmName,
+                                        filmImage,
+                                        film?.description,
+                                        filmId
+                                    )
+                                }
                             },
                             modifier = Modifier
                                 .size(35.dp)
@@ -270,70 +336,90 @@ fun FilmScreen(
 
 @Composable
 fun OverviewBox(
-    result: FilmEntry?
+    result: FilmEntry?,
+    viewModel: FilmScreenViewModel
 ) {
-    Column(
-        modifier = Modifier
-            .padding(end = 15.dp)
-            .shadow(5.dp, RoundedCornerShape(10.dp))
-            .clip(RoundedCornerShape(10.dp))
-    ) {
-        Box(
+    val isLoading by remember {
+        viewModel.isLoading
+    }
+    if(!isLoading){
+        Column(
             modifier = Modifier
-                .background(BackGround)
-                .height(120.dp)
-                .width(170.dp)
+                .padding(end = 15.dp)
+                .shadow(5.dp, RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(10.dp))
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+            Box(
+                modifier = Modifier
+                    .background(BackGround)
+                    .height(120.dp)
+                    .width(170.dp)
             ) {
-                Text(
-                    text = "Overview",
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
-                    ),
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Date: ${result?.releaseDate}",
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        color = Color.White,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 17.sp
-                    ),
-                    textAlign = TextAlign.Left,
-                    modifier = Modifier.align(Alignment.Start).padding(start = 5.dp)
-                )
-                Text(
-                    text = "Director: ${result?.directedBy}",
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        color = Color.White,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 17.sp
-                    ),
-                    textAlign = TextAlign.Left,
-                    modifier = Modifier.align(Alignment.Start).padding(start = 5.dp)
-                )
-                Text(
-                    text = "Duration: ${result?.duration} min",
-                    style = TextStyle(
-                        fontFamily = Poppins,
-                        color = Color.White,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 17.sp
-                    ),
-                    textAlign = TextAlign.Left,
-                    modifier = Modifier.align(Alignment.Start).padding(start = 5.dp)
-                )
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Overview",
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 18.sp
+                        ),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Date: ${result?.releaseDate}",
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            color = Color.White,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 15.sp
+                        ),
+                        textAlign = TextAlign.Left,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 5.dp)
+                    )
+                    Text(
+                        text = "Director: ${result?.directedBy}",
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            color = Color.White,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 15.sp
+                        ),
+                        textAlign = TextAlign.Left,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 5.dp)
+                    )
+                    Text(
+                        text = "Duration: ${result?.duration} min",
+                        style = TextStyle(
+                            fontFamily = Poppins,
+                            color = Color.White,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 15.sp
+                        ),
+                        textAlign = TextAlign.Left,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(start = 5.dp)
+                    )
+                }
             }
         }
+    }
+    else{
+        Spacer(modifier = Modifier.height(20.dp))
+        CircularProgressIndicator(
+            color = SearchBorderColor,
+            modifier = Modifier
+                .padding(top = 10.dp)
+        )
     }
 }

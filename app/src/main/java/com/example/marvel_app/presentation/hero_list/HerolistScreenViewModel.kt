@@ -136,7 +136,7 @@ class HeroListScreenViewModel @Inject constructor(
                                     entry.id)
                             }
                             else{
-                                HeroesListEntry(entry.name.capitalize(Locale.ROOT).take(22)+"...",
+                                HeroesListEntry(entry.name.capitalize(Locale.ROOT).take(19)+"...",
                                     entry.thumbnail.path+"."+entry.thumbnail.extension,
                                     entry.id)
                             }

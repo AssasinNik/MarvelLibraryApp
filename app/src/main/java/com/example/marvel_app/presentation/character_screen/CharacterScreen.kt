@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -174,29 +175,38 @@ fun CharacterScreen(
                     }
                 )
                 Spacer(modifier = Modifier.height(14.dp))
-                Box(
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .background(RedColor)
-                        .height(70.dp)
-                        .width(200.dp)
-                        .fillMaxWidth()
+                        .shadow(5.dp, RoundedCornerShape(10.dp))
+                        .clip(RoundedCornerShape(10.dp))
                         .align(Alignment.CenterHorizontally)
-                        .clip(RoundedCornerShape(20.dp))
-                ){
-                    Text(
-                        text = heroName.toString(),
-                        style = TextStyle(
-                            fontFamily = Poppins,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            fontSize = 20.sp
-                        ),
-                        textAlign = TextAlign.Center,
+                ) {
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.Center)
-                    )
+                            .background(RedColor)
+                            .height(70.dp)
+                            .width(200.dp)
+                            .align(Alignment.CenterHorizontally)
+                            .clip(RoundedCornerShape(20.dp))
+                    ){
+                        Text(
+                            text = heroName.toString(),
+                            style = TextStyle(
+                                fontFamily = Poppins,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                fontSize = 20.sp
+                            ),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.Center)
+                        )
+                    }
                 }
+
                 Spacer(modifier = Modifier.height(20.dp))
                 if(!isLoading){
                     Text(

@@ -80,7 +80,7 @@ fun HeroListScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 IconButton(
-                    onClick = { navController.navigate(Routes.HERO_LIST_SCREEN) },
+                    onClick = { navController.navigate(Routes.SEARCH_SCREEN) },
                     modifier = Modifier
                         .size(35.dp)
                 ) {
