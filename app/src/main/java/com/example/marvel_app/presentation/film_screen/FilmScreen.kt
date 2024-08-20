@@ -1,7 +1,13 @@
 package com.example.marvel_app.presentation.film_screen
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Build
+import android.util.Log
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,16 +31,26 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -42,6 +58,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -50,6 +67,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -63,7 +81,13 @@ import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.SearchBorderColor
 import com.example.marvel_app.util.Routes
+import com.kevinnzou.web.AccompanistWebViewClient
+import com.kevinnzou.web.LoadingState
+import com.kevinnzou.web.WebView
+import com.kevinnzou.web.rememberWebViewNavigator
+import com.kevinnzou.web.rememberWebViewState
 import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 
 @Composable
 fun FilmScreen(
@@ -218,6 +242,9 @@ fun FilmScreen(
                             .align(Alignment.Start)
                             .padding(start = 8.dp, end = 8.dp)
                     )
+                    if(film?.trailerUrl != null || film?.trailerUrl != ""){
+                        TrailerVideo(videoUrl = film?.trailerUrl)
+                    }
                 }
                 else{
                     Spacer(modifier = Modifier.height(20.dp))
@@ -420,6 +447,165 @@ fun OverviewBox(
             color = SearchBorderColor,
             modifier = Modifier
                 .padding(top = 10.dp)
+        )
+    }
+}
+
+@Composable
+fun TrailerVideo(
+    videoUrl:String?
+){
+    if (videoUrl != null) {
+        if(videoUrl.contains("brightcove")){
+            BrightcovePlayer(initialUrl = videoUrl)
+        }
+        else if (videoUrl.contains("youtu")){
+            val lastSlashIndex = videoUrl.lastIndexOf('/')
+            val id = videoUrl.substring(lastSlashIndex + 1)
+            YoutubeVideoPlayer(videoId = id)
+        }
+    }
+}
+
+@Composable
+fun YoutubeVideoPlayer(videoId: String) {
+    val context = LocalContext.current
+    var isLoading by remember { mutableStateOf(true) }
+
+    val webView = remember {
+        WebView(context).apply {
+            settings.javaScriptEnabled = true
+            settings.loadWithOverviewMode = true
+            settings.useWideViewPort = true
+            webViewClient = object : WebViewClient() {
+                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                    isLoading = true
+                }
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    isLoading = false
+                }
+            }
+        }
+    }
+
+    val htmlData = getHTMLData(videoId)
+    if (isLoading) {
+        CircularProgressIndicator()
+    }
+    AndroidView(
+        factory = { webView },
+        modifier = Modifier
+            .fillMaxSize()
+            .alpha(if (isLoading) 0f else 1f)
+    ) { view ->
+        view.loadDataWithBaseURL(
+            "https://www.youtube.com",
+            htmlData,
+            "text/html",
+            "UTF-8",
+            null
+        )
+    }
+}
+
+fun getHTMLData(videoId: String): String {
+    return """
+        <html>
+        
+            <body style="margin:0px;padding:0px;">
+               <div id="player"></div>
+                <script>
+                    var player;
+                    function onYouTubeIframeAPIReady() {
+                        player = new YT.Player('player', {
+                            height: '450',
+                            width: '650',
+                            videoId: '$videoId',
+                            playerVars: {
+                                'playsinline': 1
+                            },
+                            events: {
+                                'onReady': onPlayerReady
+                            }
+                        });
+                    }
+                    function onPlayerReady(event) {
+                     player.playVideo();
+                        // Player is ready
+                    }
+                    function seekTo(time) {
+                        player.seekTo(time, true);
+                    }
+                      function playVideo() {
+                        player.playVideo();
+                    }
+                    function pauseVideo() {
+                        player.pauseVideo();
+                    }
+                </script>
+                <script src="https://www.youtube.com/iframe_api"></script>
+            </body>
+        </html>
+    """.trimIndent()
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun BrightcovePlayer(
+    initialUrl: String
+) {
+    val state = rememberWebViewState(url = initialUrl)
+    val navigator = rememberWebViewNavigator()
+    var isLoading by remember { mutableStateOf(true) }
+
+    Column {
+        // Placeholder or loading indicator
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(240.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator() // Индикатор загрузки
+            }
+        }
+
+        // WebView отображается только когда страница загружена
+        WebView(
+            state = state,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp)
+                .height(240.dp)
+                .alpha(if (isLoading) 0f else 1f), // Прозрачность для плавного перехода
+            navigator = navigator,
+            onCreated = { webView ->
+                webView.settings.javaScriptEnabled = true
+            },
+            client = remember {
+                object : AccompanistWebViewClient() {
+                    override fun onPageStarted(
+                        view: WebView,
+                        url: String?,
+                        favicon: Bitmap?
+                    ) {
+                        super.onPageStarted(view, url, favicon)
+                        Timber.tag("Accompanist WebView").d("Page started loading for $url")
+                        isLoading = true
+                    }
+                    override fun onPageFinished(view: WebView, url: String?) {
+                        if (view != null) {
+                            super.onPageFinished(view, url)
+                        }
+                        Timber.tag("Accompanist WebView").d("Page finished loading for $url")
+                        isLoading = false
+                    }
+                }
+            }
         )
     }
 }
