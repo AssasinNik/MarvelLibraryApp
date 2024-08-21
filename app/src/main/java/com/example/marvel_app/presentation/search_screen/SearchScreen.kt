@@ -151,7 +151,10 @@ fun ResultSection(
                         )
                     }
                     "tvShow" -> {
-
+                        val encodedUrl = result.imageUrl?.replace("/", "%2F")
+                        navController.navigate(
+                            "${Routes.TVSHOW_SCREEN}/${result.number}/${result.name}/${encodedUrl}"
+                        )
                     }
                 }
             }

@@ -1,8 +1,10 @@
 package com.example.marvel_app.data.remote
 
 import com.example.marvel_app.data.remote.responses.Films.FilmsInfo
+import com.example.marvel_app.data.remote.responses.TvShows.Data
 import com.example.marvel_app.data.remote.responses.TvShows.TvShows
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MarvelCinematicApi {
@@ -28,5 +30,10 @@ interface MarvelCinematicApi {
     suspend fun getTvShowsByTitle(
         @Query("filter") title : String
     ): TvShows
+
+    @GET("tvShows/{id}")
+    suspend fun getTvShowsById(
+        @Path("id") id : Int
+    ): Data
 
 }

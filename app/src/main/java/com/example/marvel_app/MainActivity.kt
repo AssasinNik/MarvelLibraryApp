@@ -27,6 +27,7 @@ import com.example.marvel_app.presentation.film_screen.FilmScreen
 import com.example.marvel_app.presentation.hero_list.HeroListScreen
 import com.example.marvel_app.presentation.marvel_start_screen.MarvelStartScreen
 import com.example.marvel_app.presentation.search_screen.SearchScreen
+import com.example.marvel_app.presentation.tvShows_screen.TvShowsScreen
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Marvel_appTheme
 import com.example.marvel_app.util.Routes
@@ -176,6 +177,36 @@ class MainActivity : ComponentActivity() {
                                     filmId = filmId,
                                     filmName = filmName,
                                     filmImage = filmImage
+                                )
+                            }
+                            composable(
+                                route = "${Routes.TVSHOW_SCREEN}/{tvShowId}/{tvShowName}/{tvShowImage}",
+                                arguments = listOf(
+                                    navArgument("tvShowId"){
+                                        type = NavType.IntType
+                                    },
+                                    navArgument("tvShowName"){
+                                        type = NavType.StringType
+                                    },
+                                    navArgument("tvShowImage"){
+                                        type = NavType.StringType
+                                    }
+                                )
+                            ){
+                                val tvShowId = remember {
+                                    it.arguments?.getInt("tvShowId")
+                                }
+                                val tvShowName = remember {
+                                    it.arguments?.getString("tvShowName")
+                                }
+                                val tvShowImage = remember {
+                                    it.arguments?.getString("tvShowImage")
+                                }
+                                TvShowsScreen(
+                                    navController = navController,
+                                    tvShowId = tvShowId,
+                                    tvShowName = tvShowName,
+                                    tvShowImage = tvShowImage
                                 )
                             }
                         }

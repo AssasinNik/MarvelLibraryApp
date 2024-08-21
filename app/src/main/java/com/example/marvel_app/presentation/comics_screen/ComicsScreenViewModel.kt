@@ -153,7 +153,7 @@ class ComicsScreenViewModel @Inject constructor(
         number: Int?,
         category : String ="comics"
     ){
-        val notEmptyDescription = "There is no information about comics in our database"
+        val notEmptyDescription = "There is no information about that in our database"
         if (description == "" || description == null){
             viewModelScope.launch {
                 dao.upsertFavourite(

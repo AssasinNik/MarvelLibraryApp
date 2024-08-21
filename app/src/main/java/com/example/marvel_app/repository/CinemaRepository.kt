@@ -2,6 +2,7 @@ package com.example.marvel_app.repository
 
 import com.example.marvel_app.data.remote.MarvelCinematicApi
 import com.example.marvel_app.data.remote.responses.Films.FilmsInfo
+import com.example.marvel_app.data.remote.responses.TvShows.Data
 import com.example.marvel_app.data.remote.responses.TvShows.TvShows
 import com.example.marvel_app.util.Resource
 import dagger.hilt.android.scopes.ActivityScoped
@@ -44,4 +45,13 @@ class CinemaRepository @Inject constructor(
         }
         return Resource.Success(response)
     }
+    suspend fun getTvShowsById(id: Int): Resource<Data>{
+        val response = try {
+            api.getTvShowsById(id)
+        } catch (e: Exception) {
+            return Resource.Error("An unknown error")
+        }
+        return Resource.Success(response)
+    }
+
 }

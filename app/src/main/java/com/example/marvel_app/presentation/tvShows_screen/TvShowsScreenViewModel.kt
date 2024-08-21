@@ -1,13 +1,13 @@
-package com.example.marvel_app.presentation.film_screen
+package com.example.marvel_app.presentation.tvShows_screen
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.marvel_app.data.local.favourites.FavouriteDao
 import com.example.marvel_app.data.local.favourites.FavouritesEntity
-import com.example.marvel_app.data.models.CharacterEntry
-import com.example.marvel_app.data.models.ComicsEntry
 import com.example.marvel_app.data.models.FilmEntry
+import com.example.marvel_app.data.models.TvShowEntry
+import com.example.marvel_app.data.remote.responses.TvShows.TvShows
 import com.example.marvel_app.repository.CinemaRepository
 import com.example.marvel_app.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,66 +16,82 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Locale
 import javax.inject.Inject
 
 
 @HiltViewModel
-class FilmScreenViewModel @Inject constructor(
+class TvShowsScreenViewModel @Inject constructor(
     private val cinemaRepository: CinemaRepository,
     private val dao: FavouriteDao
 ):ViewModel() {
 
-    private var _film = MutableStateFlow<FilmEntry?>(null)
-    var film: StateFlow<FilmEntry?> = _film
+    private var _tvShow = MutableStateFlow<TvShowEntry?>(null)
+    var tvShow: StateFlow<TvShowEntry?> = _tvShow
 
     var loadError = mutableStateOf("")
     var isLoading = mutableStateOf(false)
     var isFavorite = mutableStateOf(false)
 
-    fun loadFilmInfo(filmName: String){
+    fun loadtvShowInfo(id: Int){
         viewModelScope.launch {
             isLoading.value = true
 
-            val requestsCinema = async { cinemaRepository.getMoviesByTitle(filmName)}
-            val movieResults = requestsCinema.await()
-            val filmInfo = movieResults.data!!.data[0] // Get the first result
+            val requestsTvShow = async { cinemaRepository.getTvShowsById(id)}
+            val tvShowResults = requestsTvShow.await()
+            val tvShowInfo = tvShowResults.data
 
-            when (movieResults) {
+            when (tvShowResults) {
                 is Resource.Success -> {
-                    val filmEntry: FilmEntry
-                    if(filmInfo.overview!=null && filmInfo.trailer_url!=null){
-                        filmEntry= FilmEntry(
-                            filmInfo.id,
-                            filmInfo.title,
-                            filmInfo.cover_url,
-                            filmInfo.overview,
-                            filmInfo.trailer_url,
-                            filmInfo.duration,
-                            filmInfo.directed_by,
-                            "https://www.imdb.com/title/${filmInfo.imdb_id}/",
-                            filmInfo.release_date
-                        )
+                    val tvShowEntry: TvShowEntry
+                    if (tvShowInfo != null) {
+                        if(tvShowInfo.overview!=null && tvShowInfo.trailer_url!=null){
+                            tvShowEntry= TvShowEntry(
+                                tvShowInfo.id,
+                                tvShowInfo.title,
+                                tvShowInfo.season,
+                                tvShowInfo.release_date,
+                                tvShowInfo.directed_by,
+                                tvShowInfo.overview,
+                                "https://www.imdb.com/title/${tvShowInfo.imdb_id}/",
+                                tvShowInfo.number_episodes,
+                                tvShowInfo.cover_url,
+                                tvShowInfo.trailer_url
+                            )
+                        } else{
+                            tvShowEntry= TvShowEntry(
+                                tvShowInfo.id,
+                                tvShowInfo.title,
+                                tvShowInfo.season,
+                                tvShowInfo.release_date,
+                                tvShowInfo.directed_by,
+                                "",
+                                "https://www.imdb.com/title/${tvShowInfo.imdb_id}/",
+                                tvShowInfo.number_episodes,
+                                tvShowInfo.cover_url,
+                                ""
+                            )
+                        }
                     }
                     else{
-                        filmEntry= FilmEntry(
-                            filmInfo.id,
-                            filmInfo.title,
-                            filmInfo.cover_url,
+                        tvShowEntry= TvShowEntry(
+                            0,
+                           "",
+                            0,
                             "",
                             "",
-                            filmInfo.duration,
-                            filmInfo.directed_by,
-                            "https://www.imdb.com/title/${filmInfo.imdb_id}/",
-                            filmInfo.release_date
+                            "",
+                            "",
+                            0,
+                            "",
+                            ""
                         )
                     }
 
-                    _film.value = filmEntry
+                    _tvShow.value = tvShowEntry
                     isLoading.value=false
                 }
                 is Resource.Error -> {
-                    loadError.value = movieResults.message.toString()
+                    loadError.value = tvShowResults.message.toString()
                     isLoading.value = false
                 }
             }
@@ -92,7 +108,7 @@ class FilmScreenViewModel @Inject constructor(
         imageUrl: String?,
         description: String?,
         number: Int?,
-        category : String ="films"
+        category : String ="tvShow"
     ){
         val notEmptyDescription = "There is no information about that in our database"
         if (description == "" || description == null){
@@ -129,7 +145,7 @@ class FilmScreenViewModel @Inject constructor(
     ){
         viewModelScope.launch {
             if (name != null) {
-                dao.deleteFavourite(name, "films")
+                dao.deleteFavourite(name, "tvShow")
             }
         }
         isFavorite.value = false
@@ -140,7 +156,7 @@ class FilmScreenViewModel @Inject constructor(
     ){
         viewModelScope.async {
             if (name != null){
-                isFavorite.value = dao.existsFavourites(name, "films")
+                isFavorite.value = dao.existsFavourites(name, "tvShow")
             }
         }
         Timber.tag("Check").d("Check + ${name} + ${isFavorite.value}")
