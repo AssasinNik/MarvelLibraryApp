@@ -2,6 +2,7 @@
 
 package com.example.marvel_app.presentation.comics_screen
 
+import android.content.Intent
 import android.os.Build
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -53,6 +54,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
@@ -88,6 +90,8 @@ fun ComicsScreen(
     val comics by viewModel.comics.collectAsState()
 
     val isFavorite by viewModel.isFavorite.collectAsState()
+
+    val isLoading by viewModel.isLoading.collectAsState()
 
     val icon = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder
 
@@ -316,29 +320,41 @@ fun ComicsScreen(
                             )
                         }
                     }
-                    Box (
-                        modifier = Modifier
-                            .padding(top = 10.dp, end = 8.dp)
-                            .size(45.dp)
-                            .background(color = Color.DarkGray, shape = CircleShape)
-                        ,
-                        contentAlignment = Alignment.Center
-                    ){
-                        IconButton(onClick = {
+                    if(!isLoading){
+                        if (comics?.shareLink != null || comics?.shareLink != ""){
+                            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                                putExtra(Intent.EXTRA_TEXT, comics?.shareLink)
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
 
-                        },
-                            modifier = Modifier
-                                .size(35.dp)
-                                .align(Alignment.Center)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Share,
-                                contentDescription = "Share",
-                                tint = Color.White,
+                            val context = LocalContext.current
+
+                            Box (
                                 modifier = Modifier
-                                    .size(30.dp)
-                                    .align(Alignment.Center)
-                            )
+                                    .padding(top = 10.dp, end = 8.dp)
+                                    .size(45.dp)
+                                    .background(color = Color.DarkGray, shape = CircleShape)
+                                ,
+                                contentAlignment = Alignment.Center
+                            ){
+                                IconButton(onClick = {
+                                    startActivity(context, shareIntent, null)
+                                },
+                                    modifier = Modifier
+                                        .size(35.dp)
+                                        .align(Alignment.Center)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Share,
+                                        contentDescription = "Share",
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .size(30.dp)
+                                            .align(Alignment.Center)
+                                    )
+                                }
+                            }
                         }
                     }
                 }

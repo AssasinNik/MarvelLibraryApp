@@ -7,11 +7,11 @@ data class Data(
     val imdb_id: String,
     val last_aired_date: String,
     val number_episodes: Int,
-    val overview: String,
+    val overview: String?,
     val phase: Int,
     val release_date: String,
     val saga: String,
     val season: Int,
     val title: String,
-    val trailer_url: String
+    val trailer_url: String?
 )

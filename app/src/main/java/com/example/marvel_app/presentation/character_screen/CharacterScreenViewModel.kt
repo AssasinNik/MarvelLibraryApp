@@ -59,6 +59,7 @@ class CharacterScreenViewModel @Inject constructor(
                             heroInfo.name.capitalize(Locale.ROOT),
                             heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
                             heroInfo.description,
+                            heroInfo.urls[2].url,
                             heroInfo.id
                         )
                     }
@@ -67,6 +68,7 @@ class CharacterScreenViewModel @Inject constructor(
                             heroInfo.name.capitalize(Locale.ROOT).take(25)+"...",
                             heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
                             heroInfo.description,
+                            heroInfo.urls[2].url,
                             heroInfo.id
                         )
                     }

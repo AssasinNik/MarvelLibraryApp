@@ -25,7 +25,7 @@ import kotlinx.coroutines.withContext
 fun BlurImageFromUrl(
     imageUrl: String,
     modifier: Modifier = Modifier,
-    blurRadius: Float = 10f // Adjust blur radius here
+    blurRadius: Float = 10f
 ) {
     val context = LocalContext.current
     val painter = rememberImagePainter(data = imageUrl)
@@ -44,7 +44,6 @@ fun BlurImageFromUrl(
             if (drawable is BitmapDrawable) {
                 originalBitmap.value = drawable.bitmap
 
-                // Apply blur if the API level is less than 31
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                     blurredBitmap.value = originalBitmap.value?.let { bitmap ->
                         blurBitmap(context, bitmap, blurRadius)

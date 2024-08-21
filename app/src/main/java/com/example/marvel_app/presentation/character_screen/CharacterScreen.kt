@@ -2,6 +2,7 @@ package com.example.marvel_app.presentation.character_screen
 
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,6 +29,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
@@ -134,7 +137,7 @@ fun CharacterScreen(
                         }
                     },
                     modifier = Modifier
-                        .padding(top = 40.dp, end = 16.dp)
+                        .padding(top = 40.dp, end = 8.dp)
                 ) {
                     Icon(
                         imageVector = icon,
@@ -143,6 +146,30 @@ fun CharacterScreen(
                         modifier = Modifier
                             .size(35.dp),
                     )
+                }
+                if(!isLoading){
+                    if (character?.shareLink!=null || character?.shareLink!=""){
+                        val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                            putExtra(Intent.EXTRA_TEXT, character?.shareLink)
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+
+                        val context = LocalContext.current
+                        IconButton(
+                            onClick = { startActivity(context, shareIntent, null) },
+                            modifier = Modifier
+                                .padding(top = 40.dp, end = 16.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = "Share Character",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(35.dp),
+                            )
+                        }
+                    }
                 }
             }
             Column (

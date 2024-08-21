@@ -75,6 +75,7 @@ class ComicsScreenViewModel @Inject constructor(
                             result.description,
                             result.images[0].path+"."+result.images[0].extension,
                             result.id,
+                            result.urls[0].url,
                             creators,
                             heroList.value
                         )
@@ -89,6 +90,7 @@ class ComicsScreenViewModel @Inject constructor(
                                 notEmptyDescription,
                                 result.thumbnail.path+"."+result.thumbnail.extension,
                                 result.id,
+                                result.urls[0].url,
                                 creators,
                                 heroList.value
                             )
@@ -99,6 +101,7 @@ class ComicsScreenViewModel @Inject constructor(
                                 result.textObjects[0].text,
                                 result.thumbnail.path+"."+result.thumbnail.extension,
                                 result.id,
+                                result.urls[0].url,
                                 creators,
                                 heroList.value
                             )
@@ -130,6 +133,7 @@ class ComicsScreenViewModel @Inject constructor(
                             result.name,
                             result.thumbnail.path+"."+result.thumbnail.extension,
                             result.description,
+                            result.urls[2].url,
                             result.id
                         )
                     })

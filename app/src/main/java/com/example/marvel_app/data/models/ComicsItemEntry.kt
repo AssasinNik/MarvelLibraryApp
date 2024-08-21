@@ -8,6 +8,7 @@ data class ComicsItemEntry(
     val comicsDescription: String?,
     val comicsImage: String?,
     val number : Int?,
+    val shareLink: String,
     val creators: List<Creators>? = listOf(),
     val characterEntry: List<CharacterEntry>? = listOf()
 )

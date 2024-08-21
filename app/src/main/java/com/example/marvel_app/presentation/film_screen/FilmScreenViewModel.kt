@@ -43,17 +43,33 @@ class FilmScreenViewModel @Inject constructor(
 
             when (movieResults) {
                 is Resource.Success -> {
-
-                    val filmEntry: FilmEntry = FilmEntry(
-                        filmInfo.id,
-                        filmInfo.title,
-                        filmInfo.cover_url,
-                        filmInfo.overview,
-                        filmInfo.trailer_url,
-                        filmInfo.duration,
-                        filmInfo.directed_by,
-                        filmInfo.release_date
-                    )
+                    val filmEntry: FilmEntry
+                    if(filmInfo.overview!=null && filmInfo.trailer_url!=null){
+                        filmEntry= FilmEntry(
+                            filmInfo.id,
+                            filmInfo.title,
+                            filmInfo.cover_url,
+                            filmInfo.overview,
+                            filmInfo.trailer_url,
+                            filmInfo.duration,
+                            filmInfo.directed_by,
+                            "https://www.imdb.com/title/${filmInfo.imdb_id}/",
+                            filmInfo.release_date
+                        )
+                    }
+                    else{
+                        filmEntry= FilmEntry(
+                            filmInfo.id,
+                            filmInfo.title,
+                            filmInfo.cover_url,
+                            "",
+                            "",
+                            filmInfo.duration,
+                            filmInfo.directed_by,
+                            "https://www.imdb.com/title/${filmInfo.imdb_id}/",
+                            filmInfo.release_date
+                        )
+                    }
 
                     _film.value = filmEntry
                     isLoading.value=false

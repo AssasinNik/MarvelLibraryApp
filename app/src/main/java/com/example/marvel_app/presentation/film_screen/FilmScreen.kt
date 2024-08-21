@@ -1,6 +1,7 @@
 package com.example.marvel_app.presentation.film_screen
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.util.Log
@@ -69,6 +70,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
@@ -229,34 +231,36 @@ fun FilmScreen(
                 )
                 Spacer(modifier = Modifier.height(25.dp))
                 if (!isLoading){
-                    Text(
-                        text = "Description",
-                        style = TextStyle(
-                            fontFamily = Poppins,
-                            color = Color.White,
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .align(Alignment.Start)
-                            .padding(start = 15.dp, bottom = 8.dp)
-                    )
-                    Text(
-                        text = film?.description.toString(),
-                        style = TextStyle(
-                            fontFamily = Poppins,
-                            color = Color.White,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 18.sp
-                        ),
-                        textAlign = TextAlign.Left,
-                        modifier = Modifier
-                            .align(Alignment.Start)
-                            .padding(start = 13.dp, end = 13.dp)
-                    )
+                    if (film?.description!=""){
+                        Text(
+                            text = "Description",
+                            style = TextStyle(
+                                fontFamily = Poppins,
+                                color = Color.White,
+                                fontSize = 25.sp,
+                                fontWeight = FontWeight.Medium
+                            ),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .align(Alignment.Start)
+                                .padding(start = 15.dp, bottom = 8.dp)
+                        )
+                        Text(
+                            text = film?.description.toString(),
+                            style = TextStyle(
+                                fontFamily = Poppins,
+                                color = Color.White,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 18.sp
+                            ),
+                            textAlign = TextAlign.Left,
+                            modifier = Modifier
+                                .align(Alignment.Start)
+                                .padding(start = 13.dp, end = 13.dp)
+                        )
+                    }
                     Spacer(modifier = Modifier.height(30.dp))
-                    if(film?.trailerUrl != null || film?.trailerUrl != ""){
+                    if(film?.trailerUrl != ""){
                         Text(
                             text = "Trailer",
                             style = TextStyle(
@@ -356,29 +360,41 @@ fun FilmScreen(
                             )
                         }
                     }
-                    Box(
-                        modifier = Modifier
-                            .padding(top = 10.dp, end = 8.dp)
-                            .size(45.dp)
-                            .background(color = Color.DarkGray, shape = CircleShape),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        IconButton(
-                            onClick = {
+                    if(!isLoading){
+                        if (film?.shareLink != null || film?.shareLink != ""){
+                            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                                putExtra(Intent.EXTRA_TEXT, film?.shareLink)
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
 
-                            },
-                            modifier = Modifier
-                                .size(35.dp)
-                                .align(Alignment.Center)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Share,
-                                contentDescription = "Share",
-                                tint = Color.White,
+                            val context = LocalContext.current
+
+                            Box (
                                 modifier = Modifier
-                                    .size(30.dp)
-                                    .align(Alignment.Center)
-                            )
+                                    .padding(top = 10.dp, end = 8.dp)
+                                    .size(45.dp)
+                                    .background(color = Color.DarkGray, shape = CircleShape)
+                                ,
+                                contentAlignment = Alignment.Center
+                            ){
+                                IconButton(onClick = {
+                                    startActivity(context, shareIntent, null)
+                                },
+                                    modifier = Modifier
+                                        .size(35.dp)
+                                        .align(Alignment.Center)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Share,
+                                        contentDescription = "Share",
+                                        tint = Color.White,
+                                        modifier = Modifier
+                                            .size(30.dp)
+                                            .align(Alignment.Center)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -521,7 +537,11 @@ fun YoutubeVideoPlayer(videoId: String) {
 
     val htmlData = getHTMLData(videoId)
     if (isLoading) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(
+            color = SearchBorderColor,
+            modifier = Modifier
+                .padding(top = 10.dp)
+        )
     }
     AndroidView(
         factory = { webView },
