@@ -1,13 +1,13 @@
 package com.example.marvel_app.presentation.marvel_start_screen
 
+import android.app.Activity.RESULT_OK
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
@@ -18,6 +18,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Poppins
@@ -39,39 +41,54 @@ import com.example.marvel_app.util.Routes
 import kotlinx.coroutines.delay
 
 @Composable
-fun MarvelStartScreen(navController: NavController, state: MarvelStartState, onGetStartedClick:() -> Unit) {
+fun MarvelStartScreen(
+    navController: NavController,
+    viewModel: MarvelStartViewModel = hiltViewModel()
+) {
     var showHello by remember { mutableStateOf(false) }
     var showDescription by remember { mutableStateOf(false) }
     var showButton by remember { mutableStateOf(false) }
     var gradientAlpha by remember { mutableStateOf(0f) }
-
     val context = LocalContext.current
-    LaunchedEffect(key1 = state.signInError) {
-        state.signInError?.let { error ->
-            Toast.makeText(
-                context,
-                error,
-                Toast.LENGTH_LONG
-            ).show()
+
+    val isSignInSuccessful by viewModel.isSignInSuccessful.observeAsState(false)
+    val signInError by viewModel.signInError.observeAsState(null)
+
+    val animatedGradientAlpha by animateFloatAsState(targetValue = gradientAlpha, animationSpec = tween(durationMillis = 3000))
+
+    LaunchedEffect(signInError) {
+        signInError?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
         }
     }
 
-    // Анимация прозрачности градиента
-    val animatedGradientAlpha by animateFloatAsState(
-        targetValue = gradientAlpha,
-        animationSpec = tween(durationMillis = 3000) // Длительность анимации
-    )
+    LaunchedEffect(isSignInSuccessful) {
+        if (isSignInSuccessful) {
+            Toast.makeText(context, "Sign in is successful", Toast.LENGTH_LONG).show()
+            navController.navigate(Routes.HERO_LIST_SCREEN)
+            viewModel.resetState()
+        }
+    }
 
     LaunchedEffect(Unit) {
-        delay(500) // Задержка перед началом анимации
-        gradientAlpha = 1f // Начинаем анимацию прозрачности градиента
-        delay(1200) // Ждем завершения анимации прозрачности
-        showHello = true // Показываем текст "Hello"
-        delay(1200) // Задержка перед показом описания
-        showDescription = true // Показываем описание
-        delay(1200) // Задержка перед показом кнопки
-        showButton = true // Показываем кнопку
+        delay(500)
+        gradientAlpha = 1f
+        delay(1200)
+        showHello = true
+        delay(1200)
+        showDescription = true
+        delay(1200)
+        showButton = true
     }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = { result ->
+            if (result.resultCode == RESULT_OK) {
+                viewModel.handleSignInResult(result.data)
+            }
+        }
+    )
 
     BoxWithConstraints(
         modifier = Modifier
@@ -79,14 +96,13 @@ fun MarvelStartScreen(navController: NavController, state: MarvelStartState, onG
             .background(BackGround)
     ) {
         val height = maxHeight
-        // Слой градиента с изменяющейся прозрачностью
         Box(
             modifier = Modifier
-                .fillMaxSize() // Занимаем весь экран
-                .graphicsLayer(alpha = animatedGradientAlpha) // Применяем анимацию прозрачности
+                .fillMaxSize()
+                .graphicsLayer(alpha = animatedGradientAlpha)
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(BackGround, RedColor) // Градиент
+                        colors = listOf(BackGround, RedColor)
                     )
                 )
         )
@@ -97,12 +113,11 @@ fun MarvelStartScreen(navController: NavController, state: MarvelStartState, onG
                 .align(Alignment.Center)
                 .padding(start = 16.dp, end = 16.dp)
         ) {
-            Spacer(modifier = Modifier.height(height/2)) // Пробел для центрирования текста
+            Spacer(modifier = Modifier.height(height / 2))
 
             AnimatedVisibility(
                 visible = showHello,
-                enter = fadeIn(animationSpec = tween(1000)) +
-                        slideInVertically(animationSpec = tween(1000)) { it / 2 }
+                enter = fadeIn(animationSpec = tween(1000)) + slideInVertically(animationSpec = tween(1000)) { it / 2 }
             ) {
                 WavingEmojiText()
             }
@@ -111,8 +126,7 @@ fun MarvelStartScreen(navController: NavController, state: MarvelStartState, onG
 
             AnimatedVisibility(
                 visible = showDescription,
-                enter = fadeIn(animationSpec = tween(1000)) +
-                        slideInVertically(animationSpec = tween(1000)) { it / 3 }
+                enter = fadeIn(animationSpec = tween(1000)) + slideInVertically(animationSpec = tween(1000)) { it / 3 }
             ) {
                 Text(
                     text = "Welcome to our app about different heroes from Marvel Comics",
@@ -127,16 +141,15 @@ fun MarvelStartScreen(navController: NavController, state: MarvelStartState, onG
                 )
             }
 
-            Spacer(modifier = Modifier.height(100.dp)) // Пробел для центрирования кнопки
+            Spacer(modifier = Modifier.height(100.dp))
 
             AnimatedVisibility(
                 visible = showButton,
-                enter = fadeIn(animationSpec = tween(1000)) +
-                        slideInVertically(animationSpec = tween(1000)) { it / 4 }
+                enter = fadeIn(animationSpec = tween(1000)) + slideInVertically(animationSpec = tween(1000)) { it / 4 }
             ) {
                 Button(
                     onClick = {
-                        onGetStartedClick()
+                        viewModel.signIn(launcher)
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = SearchColor,
@@ -163,6 +176,7 @@ fun MarvelStartScreen(navController: NavController, state: MarvelStartState, onG
         }
     }
 }
+
 @Composable
 fun WavingEmojiText() {
     var startWaving by remember { mutableStateOf(false) }

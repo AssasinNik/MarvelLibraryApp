@@ -46,6 +46,7 @@ appcompat = "1.7.0"
 compilercommon = "3.2.0-alpha11"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.0.0"
+runtimeLivedata = "1.6.8"
 
 [libraries]
 accompanist-coil = { module = "com.google.accompanist:accompanist-coil", version.ref = "accompanistCoil" }
@@ -102,6 +103,7 @@ ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooli
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-compilercommon = { group = "androidx.databinding", name = "compilerCommon", version.ref = "compilercommon" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

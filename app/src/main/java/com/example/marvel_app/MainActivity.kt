@@ -97,56 +97,7 @@ class MainActivity : ComponentActivity() {
                             composable(
                                 route = Routes.MARVEL_START_SCREEN
                             ){
-                                val viewModel = viewModel<MarvelStartViewModel>()
-                                val state by viewModel.state.collectAsState()
-                                LaunchedEffect(key1 = Unit) {
-                                    if(googleAuthUiClient.getSignedInUser() != null) {
-                                        navController.navigate(Routes.HERO_LIST_SCREEN)
-                                    }
-                                }
-
-                                val launcher = rememberLauncherForActivityResult(
-                                    contract = ActivityResultContracts.StartIntentSenderForResult(),
-                                    onResult = {result ->
-                                        if(result.resultCode == RESULT_OK) {
-                                            lifecycleScope.launch {
-                                                val signInResult = googleAuthUiClient.signInWithIntent(
-                                                    intent = result.data ?: return@launch
-                                                )
-                                                viewModel.onSignInResult(signInResult)
-                                            }
-                                        }
-                                    }
-                                )
-
-                                LaunchedEffect(key1 = state.isSignInSuccessful) {
-                                    if(state.isSignInSuccessful) {
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "Sign in is successful",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-
-                                        navController.navigate(Routes.HERO_LIST_SCREEN)
-                                        viewModel.resetState()
-                                    }
-                                }
-
-                                MarvelStartScreen(
-                                    navController = navController,
-                                    state = state,
-                                    onGetStartedClick = {
-                                        lifecycleScope.launch {
-                                            val signInIntentSender = googleAuthUiClient.signIn()
-                                            launcher.launch(
-                                                IntentSenderRequest.Builder(
-                                                    signInIntentSender ?: return@launch
-                                                ).build()
-                                            )
-                                        }
-                                    }
-                                )
-
+                                MarvelStartScreen(navController = navController)
                             }
                             composable(
                                 route = Routes.HERO_LIST_SCREEN

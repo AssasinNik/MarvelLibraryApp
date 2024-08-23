@@ -1,6 +1,7 @@
 package com.example.marvel_app.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.example.marvel_app.data.local.favourites.FavouriteDao
 import com.example.marvel_app.data.local.favourites.FavouriteDatabase
@@ -9,13 +10,16 @@ import com.example.marvel_app.data.local.heroes.HeroesDatabase
 import com.example.marvel_app.data.remote.MarvelApi
 import com.example.marvel_app.data.remote.MarvelAuthenticationInterceptor
 import com.example.marvel_app.data.remote.MarvelCinematicApi
+import com.example.marvel_app.presentation.marvel_start_screen.GoogleAuthUiClient
 import com.example.marvel_app.repository.CinemaRepository
 import com.example.marvel_app.repository.HeroRepository
 import com.example.marvel_app.util.Constants.BASE_CINEMATIC_URL
 import com.example.marvel_app.util.Constants.BASE_URL
+import com.google.android.gms.auth.api.identity.Identity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -132,6 +136,16 @@ object AppModule {
     @Provides
     fun provideComicsDao(db: FavouriteDatabase): FavouriteDao {
         return db.dao
+    }
+
+    @Provides
+    fun provideGoogleAuthUiClient(
+        @ApplicationContext context: Context
+    ): GoogleAuthUiClient {
+        return GoogleAuthUiClient(
+            context = context,
+            oneTapClient = Identity.getSignInClient(context)
+        )
     }
 
 }
