@@ -55,22 +55,45 @@ class CharacterScreenViewModel @Inject constructor(
                     val heroInfo = characterInfo.data!!.data.results[0] // Get the first result
                     val characterEntry:CharacterEntry
                     if(heroInfo.name.length<25){
-                        characterEntry = CharacterEntry(
-                            heroInfo.name.capitalize(Locale.ROOT),
-                            heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
-                            heroInfo.description,
-                            heroInfo.urls[2].url,
-                            heroInfo.id
-                        )
+                        if (heroInfo.urls.size>2){
+                            characterEntry = CharacterEntry(
+                                heroInfo.name.capitalize(Locale.ROOT),
+                                heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
+                                heroInfo.description,
+                                heroInfo.urls[2].url,
+                                heroInfo.id
+                            )
+                        }
+                        else{
+                            characterEntry = CharacterEntry(
+                                heroInfo.name.capitalize(Locale.ROOT),
+                                heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
+                                heroInfo.description,
+                                heroInfo.urls[0].url,
+                                heroInfo.id
+                            )
+                        }
                     }
                     else{
-                        characterEntry = CharacterEntry(
-                            heroInfo.name.capitalize(Locale.ROOT).take(25)+"...",
-                            heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
-                            heroInfo.description,
-                            heroInfo.urls[2].url,
-                            heroInfo.id
-                        )
+                        if(heroInfo.urls.size>2){
+                            characterEntry = CharacterEntry(
+                                heroInfo.name.capitalize(Locale.ROOT).take(25)+"...",
+                                heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
+                                heroInfo.description,
+                                heroInfo.urls[2].url,
+                                heroInfo.id
+                            )
+                        }
+                        else{
+                            characterEntry = CharacterEntry(
+                                heroInfo.name.capitalize(Locale.ROOT).take(25)+"...",
+                                heroInfo.thumbnail.path + "." + heroInfo.thumbnail.extension,
+                                heroInfo.description,
+                                heroInfo.urls[0].url,
+                                heroInfo.id
+                            )
+                        }
+
                     }
                     _character.value = characterEntry
                     when (comicsInfo) {

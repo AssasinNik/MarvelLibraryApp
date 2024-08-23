@@ -223,9 +223,16 @@ fun MarvelEntry(
             .aspectRatio(1f)
             .background(GrayColor)
             .clickable {
+                var encodedName: String
+                if(entry.characterName.contains("/")){
+                    encodedName = entry.characterName.replace("/", "%2F")
+                }
+                else{
+                    encodedName = entry.characterName
+                }
                 val encodedUrl = entry.imageUrl.replace("/", "%2F")
                 navController.navigate(
-                    "${Routes.CHARACTER_SCREEN}/${entry.number}/${entry.characterName}/${encodedUrl}"
+                    "${Routes.CHARACTER_SCREEN}/${entry.number}/${encodedName}/${encodedUrl}"
                 )
             }
     ){
