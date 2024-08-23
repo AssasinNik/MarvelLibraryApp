@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,12 +37,14 @@ import com.example.marvel_app.presentation.favourites_screen.FavouritesScreen
 import com.example.marvel_app.presentation.film_screen.FilmScreen
 import com.example.marvel_app.presentation.marvel_start_screen.GoogleAuthUiClient
 import com.example.marvel_app.presentation.hero_list.HeroListScreen
+import com.example.marvel_app.presentation.main.MainViewModel
 import com.example.marvel_app.presentation.marvel_start_screen.MarvelStartScreen
 import com.example.marvel_app.presentation.marvel_start_screen.MarvelStartViewModel
 import com.example.marvel_app.presentation.search_screen.SearchScreen
 import com.example.marvel_app.presentation.tvShows_screen.TvShowsScreen
 import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.Marvel_appTheme
+import com.example.marvel_app.util.NotificationHelper
 import com.example.marvel_app.util.Routes
 import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,7 +52,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private val googleAuthUiClient by lazy {
         GoogleAuthUiClient(
             context = applicationContext,

@@ -3,6 +3,7 @@ package com.example.marvel_app.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.example.marvel_app.data.local.favourites.FavouriteDao
 import com.example.marvel_app.data.local.favourites.FavouriteDatabase
 import com.example.marvel_app.data.local.heroes.HeroesDao
@@ -132,6 +133,18 @@ object AppModule {
             "favourites.db"
         ).allowMainThreadQueries().build()
     }
+
+    @Provides
+    @Singleton
+    fun provideApplicationContext(app: Application): Context = app.applicationContext
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(appContext: Context): WorkManager {
+        return WorkManager.getInstance(appContext)
+    }
+
+
 
     @Provides
     fun provideComicsDao(db: FavouriteDatabase): FavouriteDao {

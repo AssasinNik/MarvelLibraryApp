@@ -134,6 +134,9 @@ dependencies {
     //Google
     implementation (libs.play.services.auth)
 
+    // WorkManager
+    implementation (libs.androidx.work.runtime.ktx)
+
     implementation ("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
 
 }
