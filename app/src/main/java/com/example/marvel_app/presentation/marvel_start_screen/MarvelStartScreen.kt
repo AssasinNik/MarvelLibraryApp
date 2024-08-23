@@ -1,5 +1,6 @@
 package com.example.marvel_app.presentation.marvel_start_screen
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
@@ -23,6 +24,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,11 +39,22 @@ import com.example.marvel_app.util.Routes
 import kotlinx.coroutines.delay
 
 @Composable
-fun MarvelStartScreen(navController: NavController) {
+fun MarvelStartScreen(navController: NavController, state: MarvelStartState, onGetStartedClick:() -> Unit) {
     var showHello by remember { mutableStateOf(false) }
     var showDescription by remember { mutableStateOf(false) }
     var showButton by remember { mutableStateOf(false) }
     var gradientAlpha by remember { mutableStateOf(0f) }
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = state.signInError) {
+        state.signInError?.let { error ->
+            Toast.makeText(
+                context,
+                error,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 
     // Анимация прозрачности градиента
     val animatedGradientAlpha by animateFloatAsState(
@@ -123,7 +136,7 @@ fun MarvelStartScreen(navController: NavController) {
             ) {
                 Button(
                     onClick = {
-                        navController.navigate(Routes.HERO_LIST_SCREEN) // Переход на экран с героями
+                        onGetStartedClick()
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = SearchColor,

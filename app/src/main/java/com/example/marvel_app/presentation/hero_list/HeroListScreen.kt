@@ -22,10 +22,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,68 +45,79 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.marvel_app.R
 import com.example.marvel_app.data.models.HeroesListEntry
+import com.example.marvel_app.data.remote.responses.Google.UserData
+import com.example.marvel_app.presentation.marvel_start_screen.GoogleAuthUiClient
 import com.example.marvel_app.presentation.reusable.SearchBar
+import com.example.marvel_app.ui.theme.BackGround
 import com.example.marvel_app.ui.theme.GrayColor
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
 import com.example.marvel_app.ui.theme.SearchBorderColor
-import com.example.marvel_app.ui.theme.SearchColor
 import com.example.marvel_app.ui.theme.SearchTextColor
-import com.example.marvel_app.ui.theme.WhiteColor
 import com.example.marvel_app.util.Routes
+import timber.log.Timber
 
 @Composable
 fun HeroListScreen(
     navController: NavController,
-    viewModel: HeroListScreenViewModel = hiltViewModel()
+    viewModel: HeroListScreenViewModel = hiltViewModel(),
+    userData: UserData?,
+    googleAuthUiClient: GoogleAuthUiClient
 ){
 
     LaunchedEffect(key1 = true) {
         viewModel.getHeroList()
     }
+
+
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(20.dp))
         Row (
             modifier = Modifier
-                .padding(top = 40.dp, start = 20.dp, end = 20.dp)
                 .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.SpaceBetween
+                .padding(top = 40.dp, start = 20.dp, end = 20.dp)
+                .align(Alignment.CenterHorizontally)
+            ,
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            SubcomposeAsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(userData?.userImage)
+                    .build(),
+                contentDescription = userData?.userName,
+                contentScale = ContentScale.Crop,
+                filterQuality = FilterQuality.None,
+                modifier = Modifier
+                    .size(45.dp)
+                    .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                    .clip(CircleShape)
+                    .border(
+                        width = 2.dp,
+                        color = RedColor,
+                        shape = CircleShape
+                    ),
+                loading = {
+                    CircularProgressIndicator(color = SearchBorderColor)
+                }
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
             Column(
-                modifier = Modifier.align(Alignment.CenterVertically),
+                modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 IconButton(
                     onClick = { navController.navigate(Routes.SEARCH_SCREEN) },
                     modifier = Modifier
-                        .size(35.dp)
+                        .size(40.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Go To SearchComicsScreen",
                         tint = SearchTextColor,
                         modifier = Modifier
-                            .size(35.dp)
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Column(
-                modifier = Modifier.align(Alignment.CenterVertically),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                IconButton(
-                    onClick = { navController.navigate(Routes.SETTINGS_SCREEN) },
-                    modifier = Modifier
-                        .size(35.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Go To SettingsScreen",
-                        tint = SearchTextColor,
-                        modifier = Modifier
-                            .size(35.dp),
+                            .size(40.dp)
                     )
                 }
             }
@@ -151,7 +160,9 @@ fun HeroListScreen(
                     fontWeight = FontWeight.Medium
                 ),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.Start).padding(start = 15.dp, bottom = 8.dp)
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(start = 15.dp, bottom = 8.dp)
             )
             HeroList(navController = navController)
         }
