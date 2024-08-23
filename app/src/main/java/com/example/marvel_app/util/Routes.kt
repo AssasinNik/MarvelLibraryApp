@@ -10,4 +10,5 @@ object Routes {
     const val SEARCH_SCREEN = "SearchScreen"
     const val FILM_SCREEN = "FilmScreen"
     const val TVSHOW_SCREEN = "TvShowScreen"
+    const val FAVOURITE_LIST_SCREEN = "FavouriteListScreen"
 }

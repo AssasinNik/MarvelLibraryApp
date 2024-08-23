@@ -1,4 +1,4 @@
-package com.example.marvel_app.presentation.search_screen
+package com.example.marvel_app.presentation.favourite_list_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,19 +11,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,101 +47,102 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.example.marvel_app.R
 import com.example.marvel_app.data.models.SearchResultEntry
-import com.example.marvel_app.presentation.reusable.SearchBar
 import com.example.marvel_app.ui.theme.Poppins
 import com.example.marvel_app.ui.theme.RedColor
 import com.example.marvel_app.ui.theme.SearchBorderColor
-import com.example.marvel_app.ui.theme.SearchColor
-import com.example.marvel_app.ui.theme.SearchTextColor
-import com.example.marvel_app.ui.theme.WhiteColor
 import com.example.marvel_app.util.Routes
 import kotlinx.coroutines.Dispatchers
 
 @Composable
-fun SearchScreen(
+fun FavouriteListScreen(
     navController: NavController,
-    viewModel: SearchScreenViewModel = hiltViewModel()
+    viewModel: FavouriteListScreenViewModel = hiltViewModel(),
+    category: String
 ){
 
-    val isLoading by remember {
+    LaunchedEffect(key1 = 1) {
+        viewModel.getByCategory(category)
+    }
+
+    val isLoading = remember {
         viewModel.isLoading
     }
-    val resultList by remember {
-        viewModel.resultList
-    }
-
-    var text by remember {
-        mutableStateOf("")
-    }
-
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
-        Spacer(modifier = Modifier.height(70.dp))
-        Text(
-            text = "Search",
-            style = TextStyle(
-                fontFamily = Poppins,
-                color = Color.White,
-                fontSize = 35.sp,
-                fontWeight = FontWeight.Medium
-            ),
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .align(Alignment.Start)
-                .padding(start = 15.dp, bottom = 8.dp)
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        SearchBar(
-            hint = "Search",
-            modifier = Modifier.padding(8.dp)
-        ) { query ->
-            text = query
-            viewModel.loadInfo(query)
-        }
-        if(isLoading && text!=""){
-            Spacer(modifier = Modifier.height(20.dp))
-            CircularProgressIndicator(
-                color = SearchBorderColor,
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-        }
-        else{
-            if(resultList.isEmpty()){
-                Spacer(modifier = Modifier.height(25.dp))
-                Text(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    text = "Sorry, no information was found",
-                    style = TextStyle(
-                        color = Color(0xFFB6B6B6),
-                        fontSize = 20.sp
+        Row {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+            ) {
+                IconButton(
+                    onClick = { navController.navigate(Routes.FAVOURITES_SCREEN) },
+                    modifier = Modifier
+                        .padding(top = 40.dp, start = 16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back To Favourite Screen",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(35.dp),
                     )
+                }
+                Spacer(modifier = Modifier.width(20.dp))
+                Text(
+                    text = "Favourites",
+                    style = TextStyle(
+                        fontFamily = Poppins,
+                        color = Color.White,
+                        fontSize = 35.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(top = 40.dp)
+                )
+            }
+        }
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+        ){
+            Spacer(modifier = Modifier.height(20.dp))
+            if(isLoading.value){
+                Spacer(modifier = Modifier.height(20.dp))
+                CircularProgressIndicator(
+                    color = SearchBorderColor,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
             }
             else{
-                ResultSection(navController, viewModel)
+                ResultSection(
+                    navController = navController,
+                    viewModel = viewModel
+                )
             }
         }
-
     }
 }
+
+
 
 @Composable
 fun ResultSection(
     navController: NavController,
-    viewModel: SearchScreenViewModel
+    viewModel: FavouriteListScreenViewModel
 ){
-    val resultList by remember {
-        viewModel.resultList
+    val result by remember {
+        viewModel.heroList
     }
 
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        itemsIndexed(resultList) { index, result ->
+        itemsIndexed(result) { index, result ->
             ResultEntry(result = result){
                 when (result.type) {
-                    "hero" -> {
+                    "heroes" -> {
                         val encodedUrl = result.imageUrl?.replace("/", "%2F")
                         navController.navigate(
                             "${Routes.CHARACTER_SCREEN}/${result.number}/${result.name}/${encodedUrl}"
@@ -149,7 +154,7 @@ fun ResultSection(
                             "${Routes.COMICS_SCREEN}/${result.number}/${result.name}/${encodedUrl}"
                         )
                     }
-                    "film" -> {
+                    "films" -> {
                         val encodedUrl = result.imageUrl?.replace("/", "%2F")
                         navController.navigate(
                             "${Routes.FILM_SCREEN}/${result.number}/${result.name}/${encodedUrl}"
@@ -162,9 +167,6 @@ fun ResultSection(
                         )
                     }
                 }
-            }
-            if (index == resultList.size - 1) {
-                Spacer(modifier = Modifier.height(150.dp))
             }
         }
     }

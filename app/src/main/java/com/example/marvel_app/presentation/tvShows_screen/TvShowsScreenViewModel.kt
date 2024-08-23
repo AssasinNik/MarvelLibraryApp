@@ -44,7 +44,7 @@ class TvShowsScreenViewModel @Inject constructor(
                 is Resource.Success -> {
                     val tvShowEntry: TvShowEntry
                     if (tvShowInfo != null) {
-                        if(tvShowInfo.overview!=null && tvShowInfo.trailer_url!=null){
+                        if(tvShowInfo.overview!=null && tvShowInfo.trailer_url!=null && tvShowInfo.directed_by!=null){
                             tvShowEntry= TvShowEntry(
                                 tvShowInfo.id,
                                 tvShowInfo.title,
@@ -63,7 +63,7 @@ class TvShowsScreenViewModel @Inject constructor(
                                 tvShowInfo.title,
                                 tvShowInfo.season,
                                 tvShowInfo.release_date,
-                                tvShowInfo.directed_by,
+                                "",
                                 "",
                                 "https://www.imdb.com/title/${tvShowInfo.imdb_id}/",
                                 tvShowInfo.number_episodes,

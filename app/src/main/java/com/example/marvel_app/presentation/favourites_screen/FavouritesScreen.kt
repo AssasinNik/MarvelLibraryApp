@@ -1,6 +1,7 @@
 package com.example.marvel_app.presentation.favourites_screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ import com.example.marvel_app.R
 import com.example.marvel_app.ui.theme.GrayColor
 import com.example.marvel_app.ui.theme.IconsColor
 import com.example.marvel_app.ui.theme.Poppins
+import com.example.marvel_app.util.Routes
 
 
 @Composable
@@ -60,37 +62,45 @@ fun FavouritesScreen(
                     .padding(start = 15.dp, bottom = 8.dp)
             )
             Spacer(modifier = Modifier.height(20.dp))
-            CategoryList(width)
+            CategoryList(width, navController)
         }
     }
 }
 
 @Composable
-fun CategoryList(width: Dp) {
+fun CategoryList(width: Dp, navController: NavController) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
-            CategoryBox(nameCategory = "Films", width, R.drawable.ticket)
+            CategoryBox(nameCategory = "Films", width, R.drawable.ticket){
+                navController.navigate("${Routes.FAVOURITE_LIST_SCREEN}/films")
+            }
             Spacer(modifier = Modifier.weight(1f))
-            CategoryBox(nameCategory = "Comics", width, R.drawable.book)
+            CategoryBox(nameCategory = "Comics", width, R.drawable.book){
+                navController.navigate("${Routes.FAVOURITE_LIST_SCREEN}/comics")
+            }
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
-            CategoryBox(nameCategory = "TvShows", width, R.drawable.video)
+            CategoryBox(nameCategory = "TvShows", width, R.drawable.video){
+                navController.navigate("${Routes.FAVOURITE_LIST_SCREEN}/tvShow")
+            }
             Spacer(modifier = Modifier.weight(1f))
-            CategoryBox(nameCategory = "Heroes", width, R.drawable.group)
+            CategoryBox(nameCategory = "Heroes", width, R.drawable.group){
+                navController.navigate("${Routes.FAVOURITE_LIST_SCREEN}/heroes")
+            }
         }
     }
 }
 
 @Composable
-fun CategoryBox(nameCategory: String, width: Dp, icon: Int) {
+fun CategoryBox(nameCategory: String, width: Dp, icon: Int, onTap:() -> Unit) {
     Column(
         modifier = Modifier
             .shadow(5.dp, RoundedCornerShape(10.dp))
@@ -98,6 +108,9 @@ fun CategoryBox(nameCategory: String, width: Dp, icon: Int) {
             .background(GrayColor)
             .padding(8.dp)
             .width(width / 3 + width / 15)
+            .clickable {
+                onTap()
+            }
     ) {
         Column(modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Icon(

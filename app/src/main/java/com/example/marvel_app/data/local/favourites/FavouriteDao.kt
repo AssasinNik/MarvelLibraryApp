@@ -18,6 +18,9 @@ interface FavouriteDao {
     @Query("SELECT * FROM FavouritesEntity")
     fun selectFavourites(): Flow<List<FavouritesEntity>>
 
+    @Query("SELECT * FROM FavouritesEntity WHERE category = :category")
+    fun selectFavouritesCategory(category: String): Flow<List<FavouritesEntity>>
+
     @Query("SELECT EXISTS(SELECT 1 FROM FavouritesEntity WHERE name = :name AND category = :category)")
     fun existsFavourites(name: String, category: String): Boolean
 }

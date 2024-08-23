@@ -22,6 +22,7 @@ import com.example.marvel_app.presentation.bottom_navigation_bar.BottomNavBar
 import com.example.marvel_app.presentation.settings_screen.SettingsScreen
 import com.example.marvel_app.presentation.character_screen.CharacterScreen
 import com.example.marvel_app.presentation.comics_screen.ComicsScreen
+import com.example.marvel_app.presentation.favourite_list_screen.FavouriteListScreen
 import com.example.marvel_app.presentation.favourites_screen.FavouritesScreen
 import com.example.marvel_app.presentation.film_screen.FilmScreen
 import com.example.marvel_app.presentation.hero_list.HeroListScreen
@@ -208,6 +209,24 @@ class MainActivity : ComponentActivity() {
                                     tvShowName = tvShowName,
                                     tvShowImage = tvShowImage
                                 )
+                            }
+                            composable(
+                                route = "${Routes.FAVOURITE_LIST_SCREEN}/{category}",
+                                arguments = listOf(
+                                    navArgument("category"){
+                                        type = NavType.StringType
+                                    }
+                                )
+                            ){
+                                val category = remember {
+                                    it.arguments?.getString("category")
+                                }
+                                if (category != null) {
+                                    FavouriteListScreen(
+                                        navController = navController,
+                                        category = category
+                                    )
+                                }
                             }
                         }
                     }
