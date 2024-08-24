@@ -98,13 +98,13 @@ fun CharacterScreen(
                 .fillMaxWidth()
             ){
                 IconButton(
-                    onClick = { navController.navigate(Routes.HERO_LIST_SCREEN) },
+                    onClick = { navController.popBackStack()  },
                     modifier = Modifier
                         .padding(top = 40.dp, start = 16.dp)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back To MainScreen",
+                        contentDescription = "Back To previous",
                         tint = Color.White,
                         modifier = Modifier
                             .size(35.dp),

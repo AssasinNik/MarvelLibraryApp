@@ -303,13 +303,13 @@ fun TvShowsScreen(
                 ) {
                     IconButton(
                         onClick = {
-                            navController.navigate(Routes.HERO_LIST_SCREEN)
+                            navController.popBackStack()
                         },
                         modifier = Modifier.size(35.dp)
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back-To-HeroListScreen",
+                            contentDescription = "Back-To-Previous",
                             tint = Color.White,
                             modifier = Modifier.size(30.dp)
                         )

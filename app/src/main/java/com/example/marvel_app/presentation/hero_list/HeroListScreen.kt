@@ -1,5 +1,6 @@
 package com.example.marvel_app.presentation.hero_list
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
@@ -136,8 +138,18 @@ fun HeroListScreen(
                     .height(100.dp)
                     .width(200.dp)
             )
+            val sendIntent = Intent(Intent.ACTION_SEND).apply {
+                putExtra(Intent.EXTRA_TEXT, "https://www.marvel.com")
+                type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+
+            val context = LocalContext.current
             Text(
-                modifier = Modifier,
+                modifier = Modifier
+                    .clickable {
+                        startActivity(context, shareIntent, null)
+                    },
                 text = "Data provided by Marvel. © 2024 MARVEL",
                 style = TextStyle(
                     color = Color(0xFFB6B6B6),

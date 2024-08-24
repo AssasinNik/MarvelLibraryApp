@@ -3,6 +3,7 @@ package com.example.marvel_app.presentation.reusable
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Box
@@ -53,6 +54,11 @@ fun YoutubeVideoPlayer(videoId: String, context: Context) {
                     super.onPageFinished(view, url)
                     isLoading = false
                 }
+
+                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                    // Блокировка всех переходов по ссылкам
+                    return true
+                }
             }
         }
     }
@@ -87,9 +93,8 @@ fun YoutubeVideoPlayer(videoId: String, context: Context) {
 fun getHTMLData(videoId: String): String {
     return """
         <html>
-        
             <body style="margin:0px;padding:0px;">
-               <div id="player"></div>
+                <div id="player"></div>
                 <script>
                     var player;
                     function onYouTubeIframeAPIReady() {
@@ -98,7 +103,12 @@ fun getHTMLData(videoId: String): String {
                             width: '1000',
                             videoId: '$videoId',
                             playerVars: {
-                                'playsinline': 1
+                                'playsinline': 1,
+                                'controls': 1,
+                                'modestbranding': 1,
+                                'rel': 0,
+                                'disablekb': 1,
+                                'fs': 0
                             },
                             events: {
                                 'onReady': onPlayerReady
@@ -106,17 +116,7 @@ fun getHTMLData(videoId: String): String {
                         });
                     }
                     function onPlayerReady(event) {
-                     player.playVideo();
-                        // Player is ready
-                    }
-                    function seekTo(time) {
-                        player.seekTo(time, true);
-                    }
-                      function playVideo() {
                         player.playVideo();
-                    }
-                    function pauseVideo() {
-                        player.pauseVideo();
                     }
                 </script>
                 <script src="https://www.youtube.com/iframe_api"></script>
