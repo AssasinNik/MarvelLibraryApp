@@ -106,14 +106,13 @@ class MainActivity : ComponentActivity() {
                             ){
                                 HeroListScreen(
                                     navController = navController,
-                                    userData = googleAuthUiClient.getSignedInUser(),
-                                    googleAuthUiClient = googleAuthUiClient
+                                    userData = googleAuthUiClient.getSignedInUser()
                                 )
                             }
                             composable(
                                 route = Routes.SETTINGS_SCREEN
                             ){
-                                SettingsScreen(navController = navController)
+                                SettingsScreen(navController = navController, userData = googleAuthUiClient.getSignedInUser())
                             }
                             composable(
                                 route = Routes.SEARCH_SCREEN

@@ -62,7 +62,6 @@ fun HeroListScreen(
     navController: NavController,
     viewModel: HeroListScreenViewModel = hiltViewModel(),
     userData: UserData?,
-    googleAuthUiClient: GoogleAuthUiClient
 ){
 
     LaunchedEffect(key1 = true) {
@@ -96,7 +95,11 @@ fun HeroListScreen(
                         width = 2.dp,
                         color = RedColor,
                         shape = CircleShape
-                    ),
+                    )
+                    .clickable {
+                        navController.navigate(Routes.SETTINGS_SCREEN)
+                    }
+                ,
                 loading = {
                     CircularProgressIndicator(color = SearchBorderColor)
                 }
