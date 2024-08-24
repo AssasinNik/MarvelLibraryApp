@@ -63,7 +63,6 @@ fun FavouriteListScreen(
     LaunchedEffect(key1 = 1) {
         viewModel.getByCategory(category)
     }
-
     val isLoading = remember {
         viewModel.isLoading
     }

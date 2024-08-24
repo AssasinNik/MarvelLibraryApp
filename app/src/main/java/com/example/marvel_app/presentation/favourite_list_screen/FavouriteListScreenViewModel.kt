@@ -27,6 +27,7 @@ class FavouriteListScreenViewModel @Inject constructor(
     fun getByCategory(category: String) {
         viewModelScope.launch {
             isLoading.value = true
+            heroList.value = emptyList()
             var cachedHeroList2 = listOf<FavouritesEntity>()
 
             cahcedResult = dao.selectFavouritesCategory(category)

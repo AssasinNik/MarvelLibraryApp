@@ -66,6 +66,7 @@ class HeroListScreenViewModel @Inject constructor(
 
     fun getHeroList(){
         viewModelScope.launch {
+            heroList.value = emptyList()
             var cachedHeroList2 = listOf<Heroes>()
             var flag: Boolean = true
             cachedCharacters = dao.selectHeroes()

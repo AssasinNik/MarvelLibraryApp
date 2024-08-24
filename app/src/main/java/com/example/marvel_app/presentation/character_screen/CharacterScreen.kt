@@ -98,7 +98,7 @@ fun CharacterScreen(
                 .fillMaxWidth()
             ){
                 IconButton(
-                    onClick = { navController.popBackStack()  },
+                    onClick = { navController.popBackStack() },
                     modifier = Modifier
                         .padding(top = 40.dp, start = 16.dp)
                 ) {
