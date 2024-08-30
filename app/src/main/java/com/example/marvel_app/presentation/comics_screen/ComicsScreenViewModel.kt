@@ -129,13 +129,24 @@ class ComicsScreenViewModel @Inject constructor(
             when(characterInfo){
                 is Resource.Success -> {
                     heroEntries.addAll(characterInfo.data!!.data.results.mapIndexed { index, result ->
-                        CharacterEntry(
-                            result.name,
-                            result.thumbnail.path+"."+result.thumbnail.extension,
-                            result.description,
-                            result.urls[2].url,
-                            result.id
-                        )
+                        if (result.urls.size>=3){
+                            CharacterEntry(
+                                result.name,
+                                result.thumbnail.path+"."+result.thumbnail.extension,
+                                result.description,
+                                result.urls[2].url,
+                                result.id
+                            )
+                        }
+                        else{
+                            CharacterEntry(
+                                result.name,
+                                result.thumbnail.path+"."+result.thumbnail.extension,
+                                result.description,
+                                result.urls[0].url,
+                                result.id
+                            )
+                        }
                     })
                 }
                 is Resource.Error -> {

@@ -115,7 +115,7 @@ object AppModule {
             app,
             HeroesDatabase::class.java,
             "heroes.db"
-        ).allowMainThreadQueries().build()
+        ).build()
     }
 
     @Provides

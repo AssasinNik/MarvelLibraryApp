@@ -121,7 +121,11 @@ fun SettingsScreen(
             Button(
                 onClick = {
                     viewModel.signOut()
-                    navController.navigate(Routes.MARVEL_START_SCREEN)
+                    navController.navigate(Routes.MARVEL_START_SCREEN) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = RedColor,

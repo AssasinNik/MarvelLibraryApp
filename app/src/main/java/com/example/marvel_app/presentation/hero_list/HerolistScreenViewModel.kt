@@ -98,7 +98,7 @@ class HeroListScreenViewModel @Inject constructor(
         }
     }
 
-    fun loadHeroPaginated(isRefresh: Boolean): Deferred<Unit> = viewModelScope.async{
+    fun loadHeroPaginated(isRefresh: Boolean): Deferred<Unit> = viewModelScope.async(Dispatchers.IO){
         if(isRefresh){
             isLoading.value = false
         }
@@ -108,13 +108,13 @@ class HeroListScreenViewModel @Inject constructor(
 
             // Список запросов (используем список, чтобы потом получить результаты)
             val heroRequests = listOf(
-                async { heroRepository.getHeroList("spider-man") },
-                async { heroRepository.getHeroList("hulk") },
-                async { heroRepository.getHeroList("wolver") },
-                async { heroRepository.getHeroList("iron") },
-                async { heroRepository.getHeroList("doctor") },
-                async { heroRepository.getHeroList("ghost") },
-                async { heroRepository.getHeroList("captain") }
+                async { heroRepository.getHeroListLimit("sp", 50) },
+                async { heroRepository.getHeroListLimit("hu", 50) },
+                async { heroRepository.getHeroListLimit("wo", 50) },
+                async { heroRepository.getHeroListLimit("ir", 50) },
+                async { heroRepository.getHeroListLimit("do", 50) },
+                async { heroRepository.getHeroListLimit("gh", 50) },
+                async { heroRepository.getHeroListLimit("ca", 50) }
             )
 
             // Ожидаем завершения всех запросов
@@ -148,7 +148,7 @@ class HeroListScreenViewModel @Inject constructor(
                     }
                 }
             }
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 dao.deleteHeroes()
                 for (i in heroEntries){
                     dao.insertHero(

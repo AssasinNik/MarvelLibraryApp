@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.marvel_app.data.local.heroes.HeroesDao
 import com.example.marvel_app.presentation.marvel_start_screen.GoogleAuthUiClient
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,11 +17,14 @@ class SettingsScreenViewModel @Inject constructor(
 ): ViewModel() {
 
     fun deleteAll(){
-        dao.deleteHeroes()
+        viewModelScope.launch(Dispatchers.IO) {
+            dao.deleteHeroes()
+        }
     }
 
     fun signOut(){
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
+            dao.deleteHeroes()
             googleAuthUiClient.signOut()
         }
     }

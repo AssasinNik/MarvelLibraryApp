@@ -35,8 +35,8 @@ class SearchScreenViewModel @Inject constructor(
                 // Выполнение асинхронных запросов
                 val requestsCinema = async { cinemaRepository.getMovies(10, name) }
                 val requestsTvShows = async { cinemaRepository.getTvShows(10, name) }
-                val requestComics = async { heroRepository.getComicsList(name, 3) }
-                val requestHeroes = async { heroRepository.getHeroListLimit(name, 3) }
+                val requestComics = async { heroRepository.getComicsList(name, 10) }
+                val requestHeroes = async { heroRepository.getHeroListLimit(name, 10) }
 
                 // Ожидание и обработка результатов запросов
                 val movieResults = requestsCinema.await()
